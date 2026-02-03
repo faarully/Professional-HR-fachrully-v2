@@ -107,7 +107,7 @@ export default function App() {
                 FACHRULLY<span className="text-emerald-600 not-italic">.</span>
               </div>
               <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">
-                © 2026 M. Fachrully — HR Transformation Specialist
+                © 2026 Designed & Developed by Muhammad Fachrully | HR Generalist
               </p>
               <div className="hidden md:block w-32"></div>
             </div>
