@@ -42,16 +42,27 @@ const Navbar = ({ whatsappNumber }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scrolled]);
 
-  const handleNavClick = (e, id) => {
+const handleNavClick = (e, id) => {
     e.preventDefault();
+    
+    // 1. Matikan status Open agar useEffect pembersih scroll jalan duluan
     setIsOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = elementPosition - offset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }
+
+    // 2. Berikan sedikit jeda (timeout) agar browser sempat melepas 'position: fixed' pada body
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        const offset = 80;
+        // Gunakan kalkulasi posisi yang lebih akurat setelah body tidak fixed
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 10); // Jeda minimal sudah cukup untuk melepas lock
   };
 
   const menuItems = ['About', 'Expertise', 'Experience', 'Education'];
