@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* Pastikan ini ada agar dark: bisa jalan di v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Reset dasar agar body mengikuti tema */
+@layer base {
+  body {
+    @apply bg-white text-black dark:bg-slate-950 dark:text-white transition-colors duration-300;
+  }
+}
