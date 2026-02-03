@@ -3,13 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="tab.ico" />
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fachrully | HR Transformation</title>
-    <script type="module" crossorigin src="/assets/index-Caihb43O.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-C2-DXuZ2.css">
+
+    <script>
+      // SCRIPT FORCE DARK MODE (Setiap kali load)
+      (function() {
+        // Hapus history pilihan user sebelumnya agar selalu fresh dark mode
+        localStorage.removeItem('theme'); 
+        
+        // Pasang class dark secara instan sebelum halaman dirender
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-Dmd-c5G6.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CHGn29_B.css">
   </head>
-  <body>
+  <body class="bg-white dark:bg-slate-950">
     <div id="root"></div>
   </body>
 </html>
