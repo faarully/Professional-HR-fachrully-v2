@@ -1,21 +1,50 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Zap, Building2 } from 'lucide-react'; // Tambah icon Building2
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { Zap, Building2 } from 'lucide-react';
 import { processTextBody } from '../utils/textProcessor';
 
 const Experience = ({ experiences }) => {
   if (!experiences) return null;
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20, 
+      scale: 0.98 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { 
+        duration: 0.8, 
+        ease: [0.25, 0.1, 0.25, 1], 
+      }
+    },
+  };
+
   return (
-    <section id="experience" className="py-24 bg-white dark:bg-[#0f172a] transition-colors duration-500">
+    <section id="experience" className="py-24 bg-white dark:bg-[#0f172a] transition-colors duration-500 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* HEADER */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
-          className="mb-16 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="mb-20 text-center"
         >
           <span className="text-emerald-600 text-[10px] font-bold tracking-[0.3em] uppercase mb-4 block italic">Career Journey</span>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
@@ -23,99 +52,122 @@ const Experience = ({ experiences }) => {
           </h2>
         </motion.div>
 
-        {/* TIMELINE ITEMS */}
-        <div className="space-y-12">
+        {/* CONTAINER */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.05 }}
+          className="space-y-12"
+        >
           {experiences.map((row, idx) => {
             const logoUrl = row[1] && row[1].trim() !== "" ? row[1] : null;
+            const cardRef = useRef(null);
+            
+            const { scrollYProgress } = useScroll({
+              target: cardRef,
+              offset: ["start end", "end start"]
+            });
+            const saberPos = useTransform(scrollYProgress, [0, 1], ["-100%", "200%"]);
 
             return (
               <motion.div 
-                key={idx} 
-                initial={{ opacity: 0, y: 50 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                viewport={{ once: true, margin: "-100px" }} 
-                transition={{ duration: 0.8, ease: "easeOut" }} 
-                className="group relative p-8 md:p-12 bg-slate-50 dark:bg-slate-900/60 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-2xl hover:shadow-slate-100 dark:hover:shadow-emerald-500/5 transition-all duration-500"
+                ref={cardRef}
+                key={`experience-card-${idx}`} 
+                variants={cardVariants}
+                // RESPONSIVE HOVER: Membesar 4% dengan transisi cepat
+                whileHover={{ 
+                  scale: 1.04,
+                  y: -8,
+                  zIndex: 50,
+                  transition: { 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 25 
+                  }
+                }}
+                className="group relative p-8 md:p-12 bg-slate-50 dark:bg-slate-900/40 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-900/80 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-300 overflow-hidden"
               >
-                <div className="flex flex-col lg:flex-row justify-between items-start gap-10">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
                   
-                  {/* LEFT SIDE: Posisi, Waktu, & Logo */}
+                  {/* LEFT SIDE */}
                   <div className="w-full lg:w-1/3">
                     <motion.div 
-                      initial={{ scaleX: 0 }} 
-                      whileInView={{ scaleX: 1 }} 
-                      viewport={{ once: true }} 
-                      transition={{ duration: 1, delay: 0.2 }} 
-                      className="h-1 w-12 bg-emerald-600 mb-6 origin-left" 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "3rem" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: 0.3 }}
+                      className="h-[2px] bg-emerald-600 mb-8" 
                     />
-                    
-                    <div className="text-emerald-600 font-bold italic text-sm mb-2">
+                    <div className="text-emerald-600 font-bold italic text-sm mb-3 uppercase tracking-widest">
                       {row[3]} — {row[4]}
                     </div>
-
-                    <h3 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight group-hover:text-emerald-600 transition-colors duration-300">
+                    <h3 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter leading-none group-hover:text-emerald-600 transition-colors duration-500">
                       {row[0]}
                     </h3>
-
-                    {/* LOGO & NAMA PERUSAHAAN (Indeks 1 & 2) */}
-                    <div className="flex items-center gap-4 mt-6">
-                      <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm">
+                    
+                    <div className="flex items-center gap-5 mt-8">
+                      <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm transition-transform duration-500 group-hover:scale-110">
                         {logoUrl ? (
-                          <img 
-                            src={logoUrl} 
-                            alt={row[2]} 
-                            className="w-full h-full object-cover" // Menggunakan object-cover agar memenuhi box
-                            onError={(e) => {
-                              // Jika error, ganti ke icon gedung
-                              e.target.onerror = null; 
-                              e.target.parentNode.innerHTML = '<div class="text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg></div>';
-                            }}
-                          />
+                          <img src={logoUrl} alt={row[2]} className="w-full h-full object-cover" />
                         ) : (
-                          <Building2 size={20} className="text-slate-400 dark:text-slate-500" />
+                          <Building2 size={24} className="text-slate-400 dark:text-slate-500" />
                         )}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[11px] tracking-widest leading-tight">
+                      <div className="text-slate-900 dark:text-white font-black uppercase text-[13px] tracking-tighter leading-tight">
                         {row[2]}
                       </div>
                     </div>
                   </div>
 
-                  {/* RIGHT SIDE: Deskripsi & Project */}
-                  <div className="flex-1 lg:border-l lg:border-slate-200 lg:dark:border-slate-700 lg:pl-12 space-y-8">
-                    <div className="max-w-2xl text-slate-950 dark:!text-white [&_*]:dark:!text-white text-base font-medium leading-relaxed text-justify">
+                  {/* CENTER DIVIDER */}
+                  <div className="hidden lg:block relative self-stretch w-[1px] bg-slate-200 dark:bg-slate-800/50">
+                    <motion.div 
+                      style={{ top: saberPos }}
+                      className="absolute left-0 w-full h-40 blur-[4px] bg-gradient-to-b from-transparent via-emerald-400 to-transparent dark:via-blue-500 z-0"
+                    />
+                    <motion.div 
+                      style={{ top: saberPos }}
+                      className="absolute left-0 w-full h-40 bg-gradient-to-b from-transparent via-emerald-300 to-transparent dark:via-blue-400 z-10"
+                    />
+                  </div>
+
+                  {/* RIGHT SIDE */}
+                  <div className="flex-1 lg:pl-6 space-y-10">
+                    <div className="max-w-3xl">
                       {processTextBody(row[5])}
                     </div>
 
                     {/* NOTABLE PROJECT BOX */}
                     {row[6] && row[6].trim() !== "" && (
-                      <motion.div 
-                        initial={{ opacity: 0, x: 20 }} 
-                        whileInView={{ opacity: 1, x: 0 }} 
-                        viewport={{ once: true }} 
-                        className="mt-8 p-8 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-950 rounded-2xl relative overflow-hidden group/project border border-white/10"
+                      <div className="mt-10 p-10 rounded-[2.5rem] relative overflow-hidden group/project border transition-all duration-700 
+                          bg-gradient-to-br from-white via-slate-50 to-slate-100
+                          dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617]
+                          border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none"
                       >
-                        <div className="absolute top-0 right-0 p-4 opacity-10 text-white group-hover/project:scale-125 transition-transform duration-500">
-                          <Zap size={64} fill="currentColor" />
+                        <div className="absolute -top-6 -right-6 p-4 opacity-[0.05] dark:opacity-[0.1] transition-transform duration-1000 group-hover/project:scale-125 group-hover/project:-rotate-12 text-slate-900 dark:text-blue-400">
+                          <Zap size={140} fill="currentColor" />
                         </div>
                         
                         <div className="relative z-10">
-                          <div className="flex items-center gap-2 mb-6">
-                            <Zap size={14} className="text-emerald-400 fill-emerald-400" />
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 italic">Notable Project</span>
+                          <div className="flex items-center gap-3 mb-8">
+                            <Zap size={18} className="text-emerald-500 fill-current" />
+                            <span className="text-[12px] font-black uppercase tracking-[0.4em] italic text-emerald-600 dark:text-emerald-400">
+                              Notable Project
+                            </span>
                           </div>
-                          <div className="max-w-2xl text-white !opacity-100 [&_*]:text-white font-medium">
+                          <div className="max-w-2xl">
                             {processTextBody(row[6], true)}
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </div>
                 </div>
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
