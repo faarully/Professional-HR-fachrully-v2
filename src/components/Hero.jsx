@@ -33,7 +33,7 @@ const Hero = ({ data }) => {
       className="relative min-h-screen flex items-center overflow-hidden bg-white dark:bg-slate-950 pt-28 lg:pt-24 pb-32 lg:pb-40 transition-colors duration-500"
     >
       
-      {/* Background Decor: Disesuaikan agar lebih halus di mode gelap */}
+      {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500/10 dark:bg-emerald-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 left-0 w-[30%] h-[60%] bg-slate-100/50 dark:bg-slate-900/20 blur-[100px]" />
@@ -41,21 +41,26 @@ const Hero = ({ data }) => {
 
       <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         
-        {/* FOTO */}
+        {/* FOTO DENGAN OUTLINE TEBAL DI LUAR */}
         <motion.div 
           style={{ y: isMobile ? 0 : yImage }} 
           initial={{ opacity: 0, scale: 0.9, y: 20 }} 
           animate={{ opacity: 1, scale: 1, y: 0 }} 
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} 
-          className="lg:col-span-5 order-1 relative"
+          className="lg:col-span-5 order-1 relative group"
         >
-          <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none overflow-hidden rounded-[2rem] lg:rounded-none lg:rounded-r-[10rem] shadow-2xl bg-slate-100 dark:bg-slate-900">
-            {/* Overlay Gradient: disesuaikan untuk dark mode */}
-            <div className="absolute inset-0 z-10 bg-gradient-to-l from-white dark:from-slate-950 via-transparent to-transparent hidden lg:block" />
+          {/* Garis Outline Tebal (Offset ke luar) */}
+          <div className="absolute -top-6 -right-6 -bottom-6 -left-6 border-[16px] border-emerald-600/10 dark:border-emerald-500/5 rounded-[2.5rem] lg:rounded-none lg:rounded-r-[12rem] pointer-events-none z-0 hidden lg:block transition-all duration-500 group-hover:scale-105" />
+          
+          <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none overflow-hidden rounded-[2rem] lg:rounded-none lg:rounded-r-[10rem] shadow-2xl bg-white dark:bg-slate-900 z-10 border-[6px] border-white dark:border-slate-800">
+            
+            {/* Soft Gradient Overlay (Hanya di pinggir untuk blending) */}
+            <div className="absolute inset-y-0 right-0 w-1/3 z-20 bg-gradient-to-l from-white/30 dark:from-slate-950/30 to-transparent hidden lg:block" />
+            
             <img 
               src={data['URL Photo'] || 'https://via.placeholder.com/800x1000'} 
               alt={data['Nama']} 
-              className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700" 
+              className="w-full h-full object-cover transition-all duration-700" 
             />
           </div>
         </motion.div>
@@ -66,7 +71,7 @@ const Hero = ({ data }) => {
           initial={{ opacity: 0, x: isMobile ? 0 : 50, y: isMobile ? 20 : 0 }} 
           animate={{ opacity: 1, x: 0, y: 0 }} 
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} 
-          className="lg:col-span-7 order-2 flex flex-col items-center lg:items-start text-center lg:text-left lg:pl-16"
+          className="lg:col-span-7 order-2 flex flex-col items-center lg:items-start text-center lg:text-left lg:pl-20"
         >
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }} className="flex items-center gap-3 mb-6 mt-4 lg:mt-0">
             <span className="h-[1.5px] w-8 bg-emerald-600 hidden lg:block"></span>
@@ -83,7 +88,6 @@ const Hero = ({ data }) => {
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8 }} className="flex flex-wrap justify-center lg:justify-start gap-3 mb-10">
-            {/* Info Badges */}
             <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg text-[9px] md:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest italic">
               <MapPin size={12} className="text-emerald-600" /> {data['Lokasi']}
             </div>
@@ -92,7 +96,6 @@ const Hero = ({ data }) => {
             </a>
           </motion.div>
 
-          {/* CTA Button: Inverted color logic */}
           <motion.a 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
