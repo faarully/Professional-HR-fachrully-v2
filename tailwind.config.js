@@ -6,7 +6,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        // Kita paksa Comic Sans di urutan pertama
+        sans: ['"Comic Sans MS"', '"Comic Sans"', 'cursive'],
+      },
+    },
   },
   plugins: [],
 }
