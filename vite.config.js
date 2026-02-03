@@ -8,5 +8,5 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  base:"/Professional-HR-fachrully-v2"
+  base: '/',
 })
