@@ -3,12 +3,25 @@ import { motion } from 'framer-motion';
 
 const Expertise = ({ skills }) => {
   if (!skills) return null;
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 15 }, // Jarak Y diperkecil agar tidak terlalu jauh melompat
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05, // Delay dipercepat agar lebih snappy
+        duration: 0.4,
+        ease: "easeOut",
+      }
+    })
+  };
   
   return (
-    <section id="expertise" className="py-24 bg-transparent relative overflow-hidden transition-colors duration-500 font-sans">
+    <section id="expertise" className="py-24 bg-transparent relative overflow-hidden font-sans">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div 
-          initial={{ opacity: 0, x: -30 }} 
+          initial={{ opacity: 0, x: -20 }} 
           whileInView={{ opacity: 1, x: 0 }} 
           viewport={{ once: false }} 
           className="mb-16"
@@ -31,36 +44,37 @@ const Expertise = ({ skills }) => {
             
             return (
               <motion.div 
-                key={idx} 
-                initial={{ opacity: 0, y: 30 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                viewport={{ once: true }} 
-                transition={{ delay: idx * 0.1, duration: 0.8 }} 
-                whileHover={{ y: -10 }} 
-                className="bg-white dark:bg-slate-900/80 rounded-3xl border border-slate-100 dark:border-slate-800 group hover:shadow-2xl hover:shadow-emerald-100 dark:hover:shadow-emerald-900/10 transition-all duration-500 overflow-hidden"
+                key={idx}
+                custom={idx}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.1 }}
+                // HAPUS whileHover Y di sini karena sering bikin flicker saat scroll
+                style={{ 
+                   willChange: "transform, opacity",
+                   WebkitBackfaceVisibility: "hidden" 
+                }}
+                // Pakai class hover standar Tailwind (lebih stabil untuk bayangan berat)
+                className="bg-white dark:bg-slate-900/80 rounded-3xl border border-slate-100 dark:border-slate-800 group 
+                           hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/20 
+                           transition-transform transition-shadow duration-300 ease-out overflow-hidden transform-gpu"
               >
                 <div className="p-10 md:p-12">
-                  <div className="mb-8">
-                    <h3 className="text-3xl md:text-4xl font-black text-white bg-emerald-600 px-6 py-3 rounded-2xl uppercase tracking-tighter italic inline-block transform -rotate-1 group-hover:rotate-0 transition-all duration-300">
+                  <div className="mb-10 flex flex-col items-start">
+                    <h3 className="text-2xl md:text-4xl font-black text-white bg-emerald-600 px-6 py-4 rounded-2xl uppercase tracking-tighter italic leading-tight transform -rotate-2 group-hover:rotate-0 transition-transform duration-500 origin-left shadow-lg shadow-emerald-600/20">
                       {parts[0]}
                     </h3>
                   </div>
                   
                   <div className="flex flex-wrap gap-3">
                     {tags.map((tag, i) => (
-                      <motion.span 
+                      <span 
                         key={i}
-                        // HAPUS properti color di sini karena bikin konflik saat switch tema
-                        whileHover={{ scale: 1.05 }} 
-                        /* PERUBAHAN UTAMA:
-                          - Menggunakan hover:text-emerald-600 (Tailwind) sebagai pengganti whileHover color.
-                          - Menambahkan transition-all agar transisi warna teks tetap smooth.
-                          - Memastikan text-slate-700 dan dark:text-slate-200 terdefinisi kuat.
-                        */
-                        className="px-4 py-2 bg-slate-100/50 dark:bg-slate-800/50 text-[10px] md:text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase tracking-widest rounded-lg border border-slate-200/50 dark:border-slate-700 group-hover:border-emerald-500/30 transition-all duration-300 cursor-default"
+                        className="px-4 py-2 bg-slate-100/50 dark:bg-slate-800/50 text-[10px] md:text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase tracking-widest rounded-lg border border-slate-200/50 dark:border-slate-700 group-hover:border-emerald-500/30 transition-colors duration-300 cursor-default whitespace-nowrap"
                       >
                         {tag.trim()}
-                      </motion.span>
+                      </span>
                     ))}
                   </div>
                 </div>

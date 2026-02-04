@@ -5,29 +5,27 @@ import { ArrowUpRight } from 'lucide-react';
 const Education = ({ education }) => {
   if (!education) return null;
 
-  // Varians untuk Container agar anak-anaknya (cards) muncul berurutan (stagger)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1, // Jeda antar kartu agar lebih mengalir
+        staggerChildren: 0.1,
       },
     },
   };
 
-  // Varians untuk tiap kartu (Card)
   const itemVariants = {
     hidden: { 
       opacity: 0, 
-      y: 20 // Jarak geser diperkecil dari 40 ke 20 agar tidak sporadis
+      y: 20 
     },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut" // Menggunakan kurva standar yang tenang
+        ease: "easeOut"
       }
     }
   };
@@ -38,7 +36,7 @@ const Education = ({ education }) => {
         <motion.h2 
           initial={{ opacity: 0, y: 20 }} 
           whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: false, amount: 0.3 }} // Muncul lagi saat scroll, tapi butuh 30% elemen terlihat
+          viewport={{ once: false, amount: 0.3 }}
           className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-20 text-center italic"
         >
           Credentials & <span className="text-emerald-500">Education.</span>
@@ -48,7 +46,7 @@ const Education = ({ education }) => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.1 }} // Sensitivitas scroll ditingkatkan
+          viewport={{ once: true, amount: 0.1 }} // 'once: true' mencegah re-trigger animasi saat scroll naik-turun yang bikin capek GPU
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
           {education.map((row, idx) => {
@@ -56,33 +54,37 @@ const Education = ({ education }) => {
             const isLink = extraVal.toLowerCase().startsWith('http');
             
             return (
+              /* Wrapper motion hanya untuk entrance */
               <motion.div 
                 key={idx} 
                 variants={itemVariants}
-                whileHover={{ 
-                  y: -8, 
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  transition: { duration: 0.3 } 
-                }} 
-                className="p-8 bg-white/5 border border-white/10 rounded-3xl flex justify-between items-center group hover:border-emerald-500/50 transition-all duration-500"
+                className="block" // Pastikan wrapper tidak punya styling transform
               >
-                <div>
-                  <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1">{row[0]}</h4>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{row[1]} • {row[2]}</p>
+                {/* Div Internal untuk Hover (Murni CSS) */}
+                <div className="p-8 bg-white/5 border border-white/10 rounded-3xl flex justify-between items-center group 
+                                transition-all duration-300 ease-out cursor-default
+                                hover:bg-white/[0.08] hover:border-emerald-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10">
+                  <div>
+                    <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1">{row[0]}</h4>
+                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{row[1]} • {row[2]}</p>
+                  </div>
+                  
+                  {isLink && (
+                    <div className="flex items-center ml-4">
+                      {/* Tombol link tetap pake motion kecil karena dia independen, tidak bentrok dengan layout utama */}
+                      <motion.a 
+                        whileHover={{ scale: 1.1 }} 
+                        whileTap={{ scale: 0.9 }}
+                        href={extraVal} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500 transition-colors duration-300"
+                      >
+                        <ArrowUpRight size={24} className="text-white" />
+                      </motion.a>
+                    </div>
+                  )}
                 </div>
-                
-                {isLink && (
-                  <motion.a 
-                    whileHover={{ scale: 1.05 }} 
-                    whileTap={{ scale: 0.95 }}
-                    href={extraVal} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center ml-4 group-hover:bg-emerald-500 transition-colors"
-                  >
-                    <ArrowUpRight size={24} className="text-white" />
-                  </motion.a>
-                )}
               </motion.div>
             );
           })}
