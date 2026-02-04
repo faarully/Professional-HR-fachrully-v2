@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail } from 'lucide-react';
-// Import Router
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Config & Components
 import { APPS_SCRIPT_URL } from './constants/config';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -14,26 +12,33 @@ import Experience from './components/Experience';
 import Education from './components/Education';
 import Loader from './components/Loader';
 import DarkModeSwitcher from './components/DarkModeSwitcher';
-// Import Halaman Baru
 import KalkulatorPesangon from './pages/KalkulatorPesangon';
 
-// Komponen Pembungkus Landing Page Utama
-const HomeContent = ({ data }) => (
-  <main>
-    {/* Hero Section */}
-    <Hero data={data?.Hero} />
-    
-    {/* Skill Marquee */}
-    <div className="relative z-20 -mt-10 lg:mt-0 mb-10">
-      <Marquee skills={data?.Skills} />
-    </div>
-   
-    {/* Content Sections */}
-    <Expertise skills={data?.['Professional Expertise'] || data?.['Skill Set']} />
-    <Experience experiences={data?.Experience} />
-    <Education education={data?.Education} />
+// --- GLOBAL DEBUG CONTROLLER ---
+const DEFAULT_VISIBILITY = {
+  navbar: true,
+  hero: true,
+  marquee: true,
+  expertise: true,
+  experience: true,
+  education: true,
+  footer: true
+};
 
-    {/* Contact Section - Background diubah ke slate-50 agar tidak putih tajam */}
+const HomeContent = ({ data, visibility }) => (
+  <main className="relative"> 
+    {visibility.hero && <Hero data={data?.Hero} />}
+    
+    {visibility.marquee && (
+      <div className="relative z-20 -mt-10 lg:mt-0 mb-10">
+        <Marquee skills={data?.Skills} />
+      </div>
+    )}
+   
+    {visibility.expertise && <Expertise skills={data?.['Professional Expertise'] || data?.['Skill Set']} />}
+    {visibility.experience && <Experience experiences={data?.Experience} />}
+    {visibility.education && <Education education={data?.Education} />}
+
     <section id="contact" className="py-40 bg-slate-50 dark:bg-slate-950 relative overflow-hidden transition-colors duration-500">
       <div className="max-w-5xl mx-auto px-6 text-center">
         <motion.div 
@@ -69,6 +74,9 @@ const HomeContent = ({ data }) => (
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // State Global untuk mengontrol semua visibilitas komponen
+  const [visibility, setVisibility] = useState(DEFAULT_VISIBILITY);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,47 +91,70 @@ export default function App() {
       }
     };
     fetchData();
+
+    // EXPOSE TO CONSOLE
+    // Cara pakai di console: check('hero', false) atau check('navbar', false)
+    window.check = (componentName, isVisible) => {
+      setVisibility(prev => ({
+        ...prev,
+        [componentName]: isVisible
+      }));
+      console.log(`Setting ${componentName} visibility to: ${isVisible}`);
+    };
+
+    // Shortcut untuk matikan semua kecuali satu
+    window.isolate = (name) => {
+      const isolation = Object.keys(DEFAULT_VISIBILITY).reduce((acc, key) => {
+        acc[key] = key === name;
+        return acc;
+      }, {});
+      setVisibility(isolation);
+    };
+
+    // Reset semua
+    window.resetDebug = () => setVisibility(DEFAULT_VISIBILITY);
+
   }, []);
 
   const whatsappNumber = data?.Hero?.['WA Phone'] || "";
 
   return (
     <Router>
-      {/* Container Utama: bg-white diganti ke bg-slate-50 */}
-      <div className="min-h-screen bg-slate-200 dark:bg-slate-950 font-sans selection:bg-emerald-100 dark:selection:bg-emerald-900 selection:text-emerald-900 dark:selection:text-emerald-100 text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden">
+      <div className="relative min-h-screen bg-slate-200 dark:bg-slate-950 font-sans selection:bg-emerald-100 dark:selection:bg-emerald-900 selection:text-emerald-900 dark:selection:text-emerald-100 text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden">
         
         <AnimatePresence mode="wait">
           {loading && <Loader key="loader" />}
         </AnimatePresence>
         
         {!loading && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Navbar whatsappNumber={whatsappNumber} />
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }}
+            className="relative" 
+          >
+            {visibility.navbar && <Navbar whatsappNumber={whatsappNumber} />}
             
-            {/* Navigasi Rute Halaman */}
             <Routes>
-              {/* Halaman Utama */}
-              <Route path="/" element={<HomeContent data={data} />} />
-              
-              {/* Halaman Kalkulator */}
+              <Route path="/" element={<HomeContent data={data} visibility={visibility} />} />
               <Route path="/kalkulator-pesangon" element={<KalkulatorPesangon />} />
             </Routes>
 
-            {/* Footer Section - Konsisten dengan warna background baru */}
-            <footer className="bg-white dark:bg-slate-900/30 py-20 border-t border-slate-200 dark:border-slate-800 transition-colors duration-500">
-              <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12 text-center">
-                <div 
-                  className="text-2xl font-black italic text-slate-900 dark:text-white cursor-pointer" 
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                >
-                  FACHRULLY<span className="text-emerald-600 not-italic">.</span>
+            {visibility.footer && (
+              <footer className="bg-white dark:bg-slate-900/30 py-20 border-t border-slate-200 dark:border-slate-800 transition-colors duration-500 relative">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12 text-center">
+                  <div 
+                    className="text-2xl font-black italic text-slate-900 dark:text-white cursor-pointer" 
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
+                    FACHRULLY<span className="text-emerald-600 not-italic">.</span>
+                  </div>
+                  <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">
+                    © 2026 Designed & Developed by Muhammad Fachrully | HR Generalist
+                  </p>
+                  <div className="hidden md:block w-32"></div>
                 </div>
-                <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] italic">
-                  © 2026 Designed & Developed by Muhammad Fachrully | HR Generalist
-                </p>
-                <div className="hidden md:block w-32"></div>
-              </div>
-            </footer>
+              </footer>
+            )}
 
             <DarkModeSwitcher />
           </motion.div>

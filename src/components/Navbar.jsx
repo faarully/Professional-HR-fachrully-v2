@@ -87,13 +87,12 @@ const Navbar = ({ whatsappNumber }) => {
 
   const waUrl = whatsappNumber ? `https://wa.me/${whatsappNumber.replace(/\D/g, '')}` : '#';
 
-  // Variants untuk Hamburger ala Janis Sne
   const path1Variants = {
     closed: { d: "M 2 8 L 22 8", strokeWidth: 1.5 },
     open: { d: "M 5 5 L 19 19", strokeWidth: 1.5 }
   };
   const path2Variants = {
-    closed: { d: "M 8 16 L 22 16", strokeWidth: 1.5 }, // Garis bawah lebih pendek (asimetris)
+    closed: { d: "M 8 16 L 22 16", strokeWidth: 1.5 },
     open: { d: "M 19 5 L 5 19", strokeWidth: 1.5 }
   };
 
@@ -113,8 +112,8 @@ const Navbar = ({ whatsappNumber }) => {
             FACHRULLY<span className="text-emerald-600 not-italic">.</span>
           </Link>
 
-          {/* DESKTOP MENU */}
-          <div className="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-white/70">
+          {/* DESKTOP MENU - Ditambahkan 'relative' */}
+          <div className="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-white/70 relative">
             {menuItems.map((item) => (
               <div 
                 key={item.name} 
@@ -166,29 +165,30 @@ const Navbar = ({ whatsappNumber }) => {
               Contact Me
             </motion.a>
 
-            {/* HAMBURGER ALA JANIS SNE */}
             <button 
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[102]"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <motion.path
-                  variants={path1Variants}
-                  animate={isOpen ? "open" : "closed"}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  className="text-slate-900 dark:text-white"
-                />
-                <motion.path
-                  variants={path2Variants}
-                  animate={isOpen ? "open" : "closed"}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  className="text-slate-900 dark:text-white"
-                />
-              </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <motion.path
+                    initial="closed"
+                    variants={path1Variants}
+                    animate={isOpen ? "open" : "closed"}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    className="text-slate-900 dark:text-white"
+                  />
+                  <motion.path
+                    initial="closed"
+                    variants={path2Variants}
+                    animate={isOpen ? "open" : "closed"}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    className="text-slate-900 dark:text-white"
+                  />
+                </svg>
             </button>
           </div>
         </div>
@@ -210,9 +210,11 @@ const Navbar = ({ whatsappNumber }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-white dark:bg-slate-950 z-[98] flex flex-col p-8 pt-32 md:hidden overflow-y-auto"
+            /* Ditambahkan 'relative' di sini */
+            className="fixed inset-0 bg-white dark:bg-slate-950 z-[98] flex flex-col p-8 pt-32 md:hidden overflow-y-auto relative"
           >
-            <motion.div layout className="flex flex-col space-y-6">
+            {/* Ditambahkan 'relative' pada pembungkus layout */}
+            <motion.div layout className="flex flex-col space-y-6 relative">
               {menuItems.map((item) => {
                 const isMyProjects = item.name === 'My Projects';
                 return (
@@ -270,7 +272,7 @@ const Navbar = ({ whatsappNumber }) => {
 
             <motion.div 
               layout
-              className="mt-auto pt-10"
+              className="mt-auto pt-10 relative"
               animate={{ opacity: mobileSubOpen ? 0 : 1, y: mobileSubOpen ? 20 : 0 }}
               transition={{ duration: 0.3 }}
             >
