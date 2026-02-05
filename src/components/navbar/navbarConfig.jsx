@@ -28,7 +28,20 @@ export const getMenuItems = (isHomePage) => {
       name: 'MyPROJECTS', 
       displayName: 'MyPROJECTS',
       link: null, 
-      sub: [{ name: 'Kalkulator Pesangon', link: '/kalkulator-pesangon' }] 
+      sub: [
+        { 
+          name: 'Kalkulator Pesangon', 
+          link: '/kalkulator-pesangon', 
+          icon: 'calculator', 
+          description: 'Hitung pesangon karyawan' 
+        },
+        { 
+          name: 'Psikotest Online', 
+          link: '/psikotest-online', 
+          icon: 'brain', 
+          description: 'Tes psikologi online' 
+        }
+      ] 
     },
     { 
       name: 'About Me', 
@@ -65,7 +78,7 @@ export const renderMenuItemName = (item) => {
 export const TIMING = {
   DROPDOWN_DELAY: 150,
   CLICK_OUTSIDE_DELAY: 100,
-  SCROLL_TO_DELAY: 300,
+  SCROLL_TO_DELAY: 0,
   SNAP_DURATION: 700,
 };
 

@@ -4,7 +4,7 @@ import { Mail } from 'lucide-react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { APPS_SCRIPT_URL } from './constants/config';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar';
 import Hero from './components/Hero';
 import Marquee from './components/Marquee';
 import Expertise from './components/Expertise';
@@ -12,7 +12,9 @@ import Experience from './components/Experience';
 import Education from './components/Education';
 import Loader from './components/Loader';
 import DarkModeSwitcher from './components/DarkModeSwitcher';
-import KalkulatorPesangon from './pages/KalkulatorPesangon';
+import KalkulatorPesangon from './pages/kalkulator-pesangon/KalkulatorPesangon';
+import PsikotestOnline from './pages/psikotest-online/PsikotestOnline';
+
 
 // --- GLOBAL DEBUG CONTROLLER ---
 const DEFAULT_VISIBILITY = {
@@ -136,6 +138,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomeContent data={data} visibility={visibility} />} />
               <Route path="/kalkulator-pesangon" element={<KalkulatorPesangon />} />
+              <Route path="/psikotest-online" element={<PsikotestOnline />} />
+
             </Routes>
 
             {visibility.footer && (

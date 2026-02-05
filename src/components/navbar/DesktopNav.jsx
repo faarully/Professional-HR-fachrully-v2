@@ -5,7 +5,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { renderMenuItemName, hamburgerVariants } from './navbarConfig';
+import { renderMenuItemName, hamburgerVariants } from './navbarConfig.jsx';
+import MenuIcon from './MenuIcon.jsx';
 
 const DesktopNav = ({ 
   menuItems, 
@@ -73,29 +74,69 @@ const DesktopNav = ({
               </button>
             )}
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu - Modern & Minimalist Design */}
             {item.sub && (
               <AnimatePresence>
                 {isDropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute left-0 mt-4 w-56 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-2xl p-2 z-[110]"
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ 
+                      duration: 0.2,
+                      ease: [0.16, 1, 0.3, 1]
+                    }}
+                    className="absolute left-0 mt-3 w-72 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-slate-900/30 overflow-hidden z-[110]"
                     onMouseEnter={handleDropdownEnter}
                     onMouseLeave={handleDropdownLeave}
                   >
-                    {item.sub.map((subItem) => (
-                      <Link
-                        key={subItem.name}
-                        to={subItem.link}
-                        onClick={() => setIsDropdownOpen(false)}
-                        className="block px-4 py-3 text-[9px] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer"
-                      >
-                        {subItem.name}
-                      </Link>
-                    ))}
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent pointer-events-none" />
+                    
+                    <div className="relative p-2">
+                      {item.sub.map((subItem, index) => (
+                        <motion.div
+                          key={subItem.name}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <Link
+                            to={subItem.link}
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="group flex items-start gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50/80 dark:hover:bg-emerald-950/30 transition-all duration-200 cursor-pointer"
+                          >
+                            {/* Icon */}
+                            <div className="mt-0.5 group-hover:scale-110 transition-transform duration-200">
+                              <MenuIcon 
+                                icon={subItem.icon} 
+                                className="w-6 h-6 text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" 
+                              />
+                            </div>
+                            
+                            {/* Content */}
+                            <div className="flex-1 min-w-0">
+                              <div className="text-[11px] font-bold uppercase tracking-wide text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                {subItem.name}
+                              </div>
+                              <div className="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                                {subItem.description}
+                              </div>
+                            </div>
+                            
+                            {/* Arrow indicator */}
+                            <svg 
+                              className="w-4 h-4 text-slate-400 dark:text-slate-600 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all opacity-0 group-hover:opacity-100" 
+                              fill="none" 
+                              viewBox="0 0 24 24" 
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

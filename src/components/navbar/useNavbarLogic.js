@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getMenuItems, TIMING } from './navbarConfig';
+import { getMenuItems, TIMING } from './navbarConfig.jsx';
 
 export const useNavbarLogic = () => {
   // States
@@ -150,50 +150,66 @@ export const useNavbarLogic = () => {
   // HANDLERS
   // ============================================
 
-  // Handle navigasi dengan smooth scroll
+  // Helper function untuk smooth scroll
+  const scrollToElement = useCallback((elementId, offset = 80) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
+
+  // Handle navigasi dengan smooth scroll - PERBAIKAN UTAMA
   const handleNavClick = useCallback((e, id, isRoute = false) => {
+    // Prevent default untuk semua anchor links
+    if (e && id && id.startsWith('#')) {
+      e.preventDefault();
+    }
+
+    // Tutup semua menu
+    setIsOpen(false);
+    setMobileSubOpen(false);
+
     if (isRoute) {
-      setIsOpen(false);
-      setMobileSubOpen(false);
       return;
     }
 
     if (id && id.startsWith('#')) {
+      const elementId = id.replace('#', '');
+      
       if (!isHomePage) {
-        e.preventDefault();
-        setIsOpen(false);
-        setMobileSubOpen(false);
-        navigate('/');
+        // Jika bukan di homepage, navigasi dulu ke homepage
+        navigate('/', { 
+          state: { scrollTo: elementId },
+          replace: false 
+        });
+        
+        // Scroll setelah halaman selesai render
         setTimeout(() => {
-          const element = document.getElementById(id.replace('#', ''));
-          if (element) {
-            const offset = 80;
-            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - offset;
-            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-          }
-        }, TIMING.SCROLL_TO_DELAY);
-        return;
+          scrollToElement(elementId);
+        }, 300); // Delay lebih lama untuk pastikan halaman sudah render
+      } else {
+        // Jika sudah di homepage, langsung scroll
+        scrollToElement(elementId);
       }
-      
-      e.preventDefault();
-      setIsOpen(false);
-      setMobileSubOpen(false);
-      
-      setTimeout(() => {
-        const element = document.getElementById(id.replace('#', ''));
-        if (element) {
-          const offset = 80;
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - offset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
-      }, TIMING.SCROLL_TO_DELAY);
-    } else {
-      setIsOpen(false);
-      setMobileSubOpen(false);
     }
-  }, [isHomePage, navigate]);
+  }, [isHomePage, navigate, scrollToElement]);
+
+  // Handle scroll ke section setelah navigasi (jika ada state)
+  useEffect(() => {
+    if (location.state?.scrollTo && isHomePage) {
+      setTimeout(() => {
+        scrollToElement(location.state.scrollTo);
+        // Hapus state setelah digunakan
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 100);
+    }
+  }, [location.state, isHomePage, navigate, scrollToElement]);
 
   // Toggle mobile menu
   const handleMobileMenuToggle = useCallback(() => {

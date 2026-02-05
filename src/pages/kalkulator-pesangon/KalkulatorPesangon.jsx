@@ -331,9 +331,9 @@ const KalkulatorPesangon = () => {
     setAnimationResetCount(prev => prev + 1);
   };
 
-  return (
-    <>
-<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center pt-24 sm:pt-28 lg:pt-20 pb-8 sm:pb-12 px-4 sm:px-6 font-sans">
+return (
+  <>
+  <div className="min-h-screen bg-gradient-to-br from-[#FFFFF0] to-[#FFFFE0] dark:from-slate-950 dark:to-slate-900 flex flex-col items-center pt-24 sm:pt-28 lg:pt-20 pb-8 sm:pb-12 px-4 sm:px-6 font-sans">
   <div className="max-w-7xl w-full">          {/* Header */}
           <header className="mb-8 sm:mb-12 text-center">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">

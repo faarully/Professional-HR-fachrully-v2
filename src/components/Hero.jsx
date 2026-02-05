@@ -26,7 +26,7 @@ const Hero = ({ data }) => {
     <section 
       id="about" 
       /* bg-white diganti ke bg-transparent agar warna Ivory dari App.jsx terlihat */
-      className="relative min-h-screen flex items-center overflow-hidden bg-transparent dark:bg-slate-950 pt-28 lg:pt-24 pb-32 lg:pb-40 transition-colors duration-500 font-sans"
+      className="relative min-h-screen flex items-center overflow-hidden bg-transparent dark:bg-slate-950 pt-32 lg:pt-36 pb-32 lg:pb-40 transition-colors duration-500 font-sans"
     >
       <div className="w-full relative h-full flex items-center">
         
@@ -44,7 +44,7 @@ const Hero = ({ data }) => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }} 
             animate={{ opacity: 1, scale: 1, y: 0 }} 
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} 
-            className="lg:col-span-5 order-1 relative group"
+            className="lg:col-span-5 order-1 relative group lg:mt-10"
           >
             <div className="absolute -top-6 -right-6 -bottom-6 -left-6 border-[16px] border-emerald-600/10 dark:border-emerald-500/5 rounded-[2.5rem] lg:rounded-none lg:rounded-r-[12rem] pointer-events-none z-0 hidden lg:block transition-all duration-500 group-hover:scale-105" />
             

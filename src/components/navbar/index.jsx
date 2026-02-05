@@ -32,7 +32,7 @@ const Navbar = ({ whatsappNumber }) => {
       <nav 
         className={`fixed top-0 w-full z-[100] transition-all duration-300 ease-in-out ${
           scrolled || isOpen
-            ? 'bg-white/90 dark:bg-slate-950/90 backdrop-blur-md py-4 shadow-sm' 
+            ? 'bg-[#FFFFF0]/90 dark:bg-slate-950/90 backdrop-blur-md py-4 shadow-sm' // PERUBAHAN: bg-white/90 → bg-[#FFFFF0]/90
             : 'bg-transparent py-8'
         }`}
         ref={menuRef}

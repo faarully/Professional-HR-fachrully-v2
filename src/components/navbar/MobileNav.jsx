@@ -5,7 +5,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { ANIMATION_DURATION } from './navbarConfig';
+import { ANIMATION_DURATION } from './navbarConfig.jsx';
+import MenuIcon from './MenuIcon.jsx';
 
 const MobileNav = ({ 
   isOpen,
@@ -40,7 +41,7 @@ const MobileNav = ({
             ease: "easeOut",
             duration: ANIMATION_DURATION.MOBILE_MENU
           }}
-          className="fixed inset-0 bg-white dark:bg-slate-950 z-[99] flex flex-col p-8 pt-24 md:hidden overflow-y-auto"
+          className="fixed inset-0 bg-[#FFFFF0] dark:bg-slate-950 z-[99] flex flex-col p-8 pt-24 md:hidden overflow-y-auto"
           style={{ touchAction: 'pan-y' }}
         >
           {/* Menu Items */}
@@ -94,7 +95,7 @@ const MobileNav = ({
                       </motion.span>
                     </motion.button>
                     
-                    {/* Submenu */}
+                    {/* Submenu - Modern Design with Icons */}
                     <AnimatePresence mode="wait">
                       {mobileSubOpen && (
                         <motion.div
@@ -130,7 +131,7 @@ const MobileNav = ({
                           }}
                           className="overflow-hidden"
                         >
-                          <div className="mt-6 pl-4 border-l-2 border-emerald-600/30 space-y-4">
+                          <div className="mt-6 space-y-3">
                             {item.sub.map((subItem, subIndex) => (
                               <motion.div
                                 key={subItem.name}
@@ -151,9 +152,35 @@ const MobileNav = ({
                                 <Link 
                                   to={subItem.link} 
                                   onClick={handleMobileProjectClick}
-                                  className="block text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white hover:text-emerald-600 transition-colors duration-300 cursor-pointer touch-manipulation"
+                                  className="group flex items-start gap-4 p-4 bg-white/80 dark:bg-slate-900/50 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 hover:bg-emerald-50/80 dark:hover:bg-emerald-950/30 active:scale-[0.98] transition-all duration-300 cursor-pointer touch-manipulation"
                                 >
-                                  {subItem.name}<span className="text-emerald-600">.</span>
+                                  {/* Icon */}
+                                  <div className="group-hover:scale-110 transition-transform duration-200">
+                                    <MenuIcon 
+                                      icon={subItem.icon} 
+                                      className="w-8 h-8 text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" 
+                                    />
+                                  </div>
+                                  
+                                  {/* Content */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                      {subItem.name}<span className="text-emerald-600">.</span>
+                                    </div>
+                                    <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                                      {subItem.description}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Arrow */}
+                                  <svg 
+                                    className="w-5 h-5 text-slate-400 dark:text-slate-600 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" 
+                                    fill="none" 
+                                    viewBox="0 0 24 24" 
+                                    stroke="currentColor"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
                                 </Link>
                               </motion.div>
                             ))}
