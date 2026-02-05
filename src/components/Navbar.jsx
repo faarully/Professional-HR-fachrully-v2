@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Plus, Minus } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { ChevronDown, Plus, Minus, ArrowLeft } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ whatsappNumber }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -11,6 +11,7 @@ const Navbar = ({ whatsappNumber }) => {
   const [mobileSubOpen, setMobileSubOpen] = useState(false);
   
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
@@ -73,6 +74,10 @@ const Navbar = ({ whatsappNumber }) => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   const menuItems = [
     { name: 'About', link: '#about', homeOnly: true },
     { name: 'Expertise', link: '#expertise', homeOnly: true },
@@ -104,13 +109,31 @@ const Navbar = ({ whatsappNumber }) => {
           : 'bg-transparent py-8'
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative z-[101]">
-          <Link
-            to="/"
-            className="text-2xl font-black tracking-tighter uppercase italic text-slate-900 dark:text-white cursor-pointer"
-            onClick={(e) => isHomePage ? handleNavClick(e, '#about') : null}
-          >
-            FACHRULLY<span className="text-emerald-600 not-italic">.</span>
-          </Link>
+          {/* Bagian kiri: Back Button atau Logo */}
+          <div className="flex items-center gap-4">
+            {!isHomePage && (
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={handleBackClick}
+                className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer" // TAMBAHKAN cursor-pointer DI SINI
+              >
+                <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                <span>Back</span>
+              </motion.button>
+            )}
+            
+            <Link
+              to="/"
+              className={`text-2xl font-black tracking-tighter uppercase italic text-slate-900 dark:text-white cursor-pointer ${
+                !isHomePage ? 'ml-4 border-l border-slate-200 dark:border-slate-700 pl-4' : ''
+              }`}
+              onClick={(e) => isHomePage ? handleNavClick(e, '#about') : null}
+            >
+              FACHRULLY<span className="text-emerald-600 not-italic">.</span>
+            </Link>
+          </div>
 
           {/* DESKTOP MENU - Ditambahkan 'relative' */}
           <div className="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-white/70 relative">
@@ -122,12 +145,12 @@ const Navbar = ({ whatsappNumber }) => {
                 onMouseLeave={() => item.sub && setIsDropdownOpen(false)}
               >
                 {item.link ? (
-                   <a href={item.link} onClick={(e) => handleNavClick(e, item.link)} className="flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative">
+                   <a href={item.link} onClick={(e) => handleNavClick(e, item.link)} className="flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative cursor-pointer">
                      {item.name}
                      <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-emerald-600 transition-all group-hover:w-full" />
                    </a>
                 ) : (
-                  <button className="flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative">
+                  <button className="flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative cursor-pointer">
                     {item.name}
                     {item.sub && <ChevronDown size={12} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />}
                   </button>
@@ -147,7 +170,7 @@ const Navbar = ({ whatsappNumber }) => {
                             key={subItem.name}
                             to={subItem.link}
                             onClick={() => setIsDropdownOpen(false)}
-                            className="block px-4 py-3 text-[9px] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
+                            className="block px-4 py-3 text-[9px] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer"
                           >
                             {subItem.name}
                           </Link>
@@ -161,13 +184,20 @@ const Navbar = ({ whatsappNumber }) => {
           </div>
 
           <div className="flex items-center gap-4">
-            <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} href={waUrl} target="_blank" rel="noopener noreferrer" className="hidden md:block bg-slate-900 text-white dark:bg-white dark:text-black px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all rounded-full shadow-lg">
+            <motion.a 
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.95 }} 
+              href={waUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hidden md:block bg-slate-900 text-white dark:bg-white dark:text-black px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all rounded-full shadow-lg cursor-pointer"
+            >
               Contact Me
             </motion.a>
 
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[102]"
+              className="md:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[102] cursor-pointer" // TAMBAHKAN cursor-pointer DI SINI
             >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <motion.path
@@ -210,10 +240,25 @@ const Navbar = ({ whatsappNumber }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            /* Ditambahkan 'relative' di sini */
             className="fixed inset-0 bg-white dark:bg-slate-950 z-[98] flex flex-col p-8 pt-32 md:hidden overflow-y-auto relative"
           >
-            {/* Ditambahkan 'relative' pada pembungkus layout */}
+            {/* Tombol Back di mobile menu */}
+            {!isHomePage && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1 }}
+                onClick={() => {
+                  handleBackClick();
+                  setIsOpen(false);
+                }}
+                className="absolute top-8 left-8 flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer" // TAMBAHKAN cursor-pointer DI SINI
+              >
+                <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="text-sm font-medium">Back</span>
+              </motion.button>
+            )}
+
             <motion.div layout className="flex flex-col space-y-6 relative">
               {menuItems.map((item) => {
                 const isMyProjects = item.name === 'My Projects';
@@ -233,7 +278,7 @@ const Navbar = ({ whatsappNumber }) => {
                             <motion.button 
                               whileTap={{ scale: 0.98 }}
                               onClick={() => setMobileSubOpen(!mobileSubOpen)}
-                              className="flex items-center justify-between w-full text-4xl font-black uppercase tracking-tighter transition-colors duration-300 text-left text-slate-900 dark:text-white hover:text-emerald-600 active:text-emerald-600"
+                              className="flex items-center justify-between w-full text-4xl font-black uppercase tracking-tighter transition-colors duration-300 text-left text-slate-900 dark:text-white hover:text-emerald-600 active:text-emerald-600 cursor-pointer"
                             >
                               {item.name}
                               <span className="text-emerald-600">
@@ -250,7 +295,12 @@ const Navbar = ({ whatsappNumber }) => {
                                   className="overflow-hidden mt-6 pl-4 border-l-2 border-emerald-600/30"
                                 >
                                   {item.sub.map((subItem) => (
-                                    <Link key={subItem.name} to={subItem.link} onClick={() => setIsOpen(false)} className="block text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white mb-6 last:mb-2 hover:text-emerald-600 transition-colors duration-300">
+                                    <Link 
+                                      key={subItem.name} 
+                                      to={subItem.link} 
+                                      onClick={() => setIsOpen(false)} 
+                                      className="block text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white mb-6 last:mb-2 hover:text-emerald-600 transition-colors duration-300 cursor-pointer"
+                                    >
                                       {subItem.name}<span className="text-emerald-600">.</span>
                                     </Link>
                                   ))}
@@ -259,7 +309,11 @@ const Navbar = ({ whatsappNumber }) => {
                             </AnimatePresence>
                           </div>
                         ) : (
-                          <a href={item.link} onClick={(e) => handleNavClick(e, item.link)} className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white block hover:text-emerald-600 active:text-emerald-600 transition-colors duration-300">
+                          <a 
+                            href={item.link} 
+                            onClick={(e) => handleNavClick(e, item.link)} 
+                            className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white block hover:text-emerald-600 active:text-emerald-600 transition-colors duration-300 cursor-pointer"
+                          >
                             {item.name}<span className="text-emerald-600">.</span>
                           </a>
                         )}
@@ -276,7 +330,10 @@ const Navbar = ({ whatsappNumber }) => {
               animate={{ opacity: mobileSubOpen ? 0 : 1, y: mobileSubOpen ? 20 : 0 }}
               transition={{ duration: 0.3 }}
             >
-              <a href={waUrl} className="block w-full bg-emerald-600 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-center shadow-xl shadow-emerald-500/20 active:bg-emerald-700 transition-colors">
+              <a 
+                href={waUrl} 
+                className="block w-full bg-emerald-600 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-center shadow-xl shadow-emerald-500/20 active:bg-emerald-700 transition-colors cursor-pointer"
+              >
                 Contact Me
               </a>
             </motion.div>
