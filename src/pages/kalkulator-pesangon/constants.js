@@ -112,7 +112,7 @@ export const daftarAlasan = [
     upmk: 1, 
     uph: true, 
     pisah: false,
-    label: 'Pelanggaran Aturan (Sudah Diberi SP1, SP2, SP3)',
+    label: 'Pelanggaran Aturan (SP3)',
     pasal: 'Pasal 52(1)'
   },
   { 
