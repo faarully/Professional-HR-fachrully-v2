@@ -3,19 +3,6 @@ import { motion } from 'framer-motion';
 
 const Expertise = ({ skills }) => {
   if (!skills) return null;
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.05,
-        duration: 0.4,
-        ease: "easeOut",
-      }
-    })
-  };
   
   return (
     <section id="expertise" className="py-24 bg-transparent relative overflow-hidden font-sans">
@@ -43,24 +30,11 @@ const Expertise = ({ skills }) => {
             const tags = parts[1] ? parts[1].split(',') : [];
             
             return (
-              <motion.div 
+              <div 
                 key={idx}
-                custom={idx}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.1 }}
-                style={{ 
-                   willChange: "transform, opacity",
-                   WebkitBackfaceVisibility: "hidden" 
-                }}
-                /* PENYESUAIAN WARNA CARD:
-                   - Light: bg-[#FFFFF0] (Ivory) agar senada dengan background App.
-                   - Dark: bg-slate-900 (Solid) agar benar-benar gelap.
-                */
                 className="bg-[#FFFFF0] dark:bg-slate-900 rounded-3xl border border-emerald-600/10 dark:border-slate-800 group 
                            hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 
-                           transition-all duration-300 ease-out overflow-hidden transform-gpu"
+                           transition-all duration-300 ease-out overflow-hidden"
               >
                 <div className="p-10 md:p-12">
                   <div className="mb-10 flex flex-col items-start">
@@ -73,10 +47,6 @@ const Expertise = ({ skills }) => {
                     {tags.map((tag, i) => (
                       <span 
                         key={i}
-                        /* PENYESUAIAN WARNA TAG:
-                           - Light: bg-emerald-600/5 & text-slate-700
-                           - Dark: bg-slate-800 & text-slate-200
-                        */
                         className="px-4 py-2 bg-emerald-600/5 dark:bg-slate-800/80 text-[10px] md:text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase tracking-widest rounded-lg border border-emerald-600/10 dark:border-slate-700 group-hover:border-emerald-500/30 transition-colors duration-300 cursor-default whitespace-nowrap"
                       >
                         {tag.trim()}
@@ -84,7 +54,7 @@ const Expertise = ({ skills }) => {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>

@@ -246,7 +246,7 @@ const KalkulatorPesangon = () => {
         detail.push({ 
           label: 'Uang Penggantian Hak (Cuti)', 
           value: finalUph,
-          keterangan: `${cutiValue} hari cuti ÷ ${totalHariKerjaPerBulan} hari kerja (${hariKerjaLabel}) × Rp ${formatNumber(upahBulanan)} = Rp ${formatNumber(finalUph)}`
+          keterangan: `${cutiValue} hari cuti / ${totalHariKerjaPerBulan} hari kerja (${hariKerjaLabel}) * Rp ${formatNumber(upahBulanan)}`
         });
       } else if (skenario.uph && cutiValue === 0) {
         penjelasanKomponen.push(`UPH (Cuti) = Rp 0 karena tidak ada sisa cuti yang belum diambil.`);

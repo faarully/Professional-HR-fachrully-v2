@@ -95,33 +95,34 @@ export const pasalDatabase = {
 };
 
 // Database Alasan PHK berdasarkan PP 35/2021 & Perppu Cipta Kerja
+// URUTAN SESUAI IMAGE.PNG (1-23)
 export const daftarAlasan = [
   { 
     id: '1', 
-    up: 1, 
-    upmk: 1, 
+    up: 0, 
+    upmk: 0, 
     uph: true, 
-    pisah: false,
-    label: 'Merger/Penggabungan/Peleburan/Pemisahan Perusahaan',
-    pasal: 'Pasal 41'
+    pisah: true,
+    label: 'Pekerja Mengundurkan Diri / Resign',
+    pasal: 'Pasal 50'
   },
   { 
     id: '2', 
-    up: 1, 
-    upmk: 1, 
-    uph: true, 
-    pisah: false,
-    label: 'Pengambilalihan Perusahaan',
-    pasal: 'Pasal 42(1)'
-  },
-  { 
-    id: '3', 
     up: 0.5, 
     upmk: 1, 
     uph: true, 
     pisah: false,
-    label: 'Pekerja Tidak Bersedia Lanjut Kerja (Pengambilalihan)',
-    pasal: 'Pasal 42(2)'
+    label: 'Pelanggaran Aturan (Sudah Diberi SP1, SP2, SP3)',
+    pasal: 'Pasal 52(1)'
+  },
+  { 
+    id: '3', 
+    up: 1.75, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'Memasuki Usia Pensiun',
+    pasal: 'Pasal 56'
   },
   { 
     id: '4', 
@@ -143,48 +144,48 @@ export const daftarAlasan = [
   },
   { 
     id: '6', 
+    up: 2, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'Pekerja Meninggal Dunia',
+    pasal: 'Pasal 57'
+  },
+  { 
+    id: '7', 
     up: 0.5, 
     upmk: 1, 
     uph: true, 
     pisah: false,
-    label: 'Perusahaan Tutup karena Rugi Terus Menerus 2 Tahun',
+    label: 'Perusahaan Tutup karena Rugi Terjangkau',
     pasal: 'Pasal 44(1)'
   },
   { 
-    id: '7', 
+    id: '8', 
+    up: 0, 
+    upmk: 0, 
+    uph: true, 
+    pisah: true,
+    label: 'Pekerja Mangkir 5 Hari Berturut-turut',
+    pasal: 'Pasal 51'
+  },
+  { 
+    id: '9', 
+    up: 0, 
+    upmk: 0, 
+    uph: true, 
+    pisah: true,
+    label: 'Pelanggaran Bersifat Mendesak',
+    pasal: 'Pasal 52(2)'
+  },
+  { 
+    id: '10', 
     up: 1, 
     upmk: 1, 
     uph: true, 
     pisah: false,
-    label: 'Perusahaan Tutup (Bukan karena Rugi)',
-    pasal: 'Pasal 44(2)'
-  },
-  { 
-    id: '8', 
-    up: 0.5, 
-    upmk: 1, 
-    uph: true, 
-    pisah: false,
-    label: 'Force Majeure (Perusahaan Tutup)',
-    pasal: 'Pasal 45(1)'
-  },
-  { 
-    id: '9', 
-    up: 0.75, 
-    upmk: 1, 
-    uph: true, 
-    pisah: false,
-    label: 'Force Majeure (Perusahaan Tidak Tutup)',
-    pasal: 'Pasal 45(2)'
-  },
-  { 
-    id: '10', 
-    up: 0.5, 
-    upmk: 1, 
-    uph: true, 
-    pisah: false,
-    label: 'PKPU (Penundaan Kewajiban Pembayaran Utang) - Rugi',
-    pasal: 'Pasal 46(1)'
+    label: 'Merger/Penggabungan/Peleburan/Pemisahan Perusahaan',
+    pasal: 'Pasal 41'
   },
   { 
     id: '11', 
@@ -192,8 +193,8 @@ export const daftarAlasan = [
     upmk: 1, 
     uph: true, 
     pisah: false,
-    label: 'PKPU (Penundaan Kewajiban Pembayaran Utang) - Tidak Rugi',
-    pasal: 'Pasal 46(2)'
+    label: 'Pengambilalihan Perusahaan',
+    pasal: 'Pasal 42(1)'
   },
   { 
     id: '12', 
@@ -206,69 +207,78 @@ export const daftarAlasan = [
   },
   { 
     id: '13', 
-    up: 1, 
-    upmk: 1, 
-    uph: true, 
-    pisah: false,
-    label: 'Permohonan Pekerja (Pengusaha Melanggar)',
-    pasal: 'Pasal 48'
-  },
-  { 
-    id: '14', 
-    up: 0, 
-    upmk: 0, 
-    uph: true, 
-    pisah: true,
-    label: 'Putusan LHI (Pengusaha Tidak Terbukti Melanggar)',
-    pasal: 'Pasal 49'
-  },
-  { 
-    id: '15', 
-    up: 0, 
-    upmk: 0, 
-    uph: true, 
-    pisah: true,
-    label: 'Pekerja Mengundurkan Diri / Resign',
-    pasal: 'Pasal 50'
-  },
-  { 
-    id: '16', 
-    up: 0, 
-    upmk: 0, 
-    uph: true, 
-    pisah: true,
-    label: 'Pekerja Mangkir 5 Hari Berturut-turut',
-    pasal: 'Pasal 51'
-  },
-  { 
-    id: '17', 
     up: 0.5, 
     upmk: 1, 
     uph: true, 
     pisah: false,
-    label: 'Pelanggaran Aturan (Sudah Diberi SP 1, 2, 3)',
-    pasal: 'Pasal 52(1)'
+    label: 'Force Majeure (Perusahaan Tutup)',
+    pasal: 'Pasal 45(1)'
+  },
+  { 
+    id: '14', 
+    up: 2, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'Sakit Berkepanjangan (>12 Bulan)',
+    pasal: 'Pasal 55'
+  },
+  { 
+    id: '15', 
+    up: 0.5, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'Pekerja Tidak Bersedia Lanjut Kerja',
+    pasal: 'Pasal 42(2)'
+  },
+  { 
+    id: '16', 
+    up: 0.5, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'PKPU (Penundaan Kewajiban Pembayaran) - Rugi',
+    pasal: 'Pasal 46(1)'
+  },
+  { 
+    id: '17', 
+    up: 1, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'Perusahaan Tutup (Bukan karena Force Majeure)',
+    pasal: 'Pasal 44(2)'
   },
   { 
     id: '18', 
-    up: 0, 
-    upmk: 0, 
+    up: 1, 
+    upmk: 1, 
     uph: true, 
-    pisah: true,
-    label: 'Pelanggaran Bersifat Mendesak',
-    pasal: 'Pasal 52(2)'
+    pisah: false,
+    label: 'Permohonan Pekerja (Pengusaha Mempunyai Hak)',
+    pasal: 'Pasal 48'
   },
   { 
     id: '19', 
-    up: 0, 
-    upmk: 0, 
+    up: 0.75, 
+    upmk: 1, 
     uph: true, 
-    pisah: true,
-    label: 'Pidana yang Merugikan Perusahaan',
-    pasal: 'Pasal 54(1)'
+    pisah: false,
+    label: 'Force Majeure (Perusahaan Tidak Beroperasi)',
+    pasal: 'Pasal 45(2)'
   },
   { 
     id: '20', 
+    up: 1, 
+    upmk: 1, 
+    uph: true, 
+    pisah: false,
+    label: 'PKPU (Penundaan Kewajiban Pembayaran) - Tidak Rugi',
+    pasal: 'Pasal 46(2)'
+  },
+  { 
+    id: '21', 
     up: 0, 
     upmk: 1, 
     uph: true, 
@@ -277,30 +287,21 @@ export const daftarAlasan = [
     pasal: 'Pasal 54(2)'
   },
   { 
-    id: '21', 
-    up: 2, 
-    upmk: 1, 
-    uph: true, 
-    pisah: false,
-    label: 'Sakit Berkepanjangan/Cacat Akibat Kecelakaan Kerja (>12 Bulan)',
-    pasal: 'Pasal 55'
-  },
-  { 
     id: '22', 
-    up: 1.75, 
-    upmk: 1, 
+    up: 0, 
+    upmk: 0, 
     uph: true, 
-    pisah: false,
-    label: 'Memasuki Usia Pensiun',
-    pasal: 'Pasal 56'
+    pisah: true,
+    label: 'Pidana yang Merugikan Perusahaan',
+    pasal: 'Pasal 54(1)'
   },
   { 
     id: '23', 
-    up: 2, 
-    upmk: 1, 
+    up: 0, 
+    upmk: 0, 
     uph: true, 
-    pisah: false,
-    label: 'Pekerja Meninggal Dunia (Dibayar ke Ahli Waris)',
-    pasal: 'Pasal 57'
-  },
+    pisah: true,
+    label: 'Putusan LHI (PHK atas dalil tuduhan pekerja yang tidak terbukti)',
+    pasal: 'Pasal 49'
+  }
 ];

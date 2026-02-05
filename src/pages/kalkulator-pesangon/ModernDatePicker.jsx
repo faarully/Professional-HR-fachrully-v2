@@ -1,7 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths, addYears, subYears, isToday, getDay } from 'date-fns';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  isSameMonth,
+  isSameDay,
+  addMonths,
+  subMonths,
+  addYears,
+  subYears,
+  isToday,
+  getDay,
+  isValid
+} from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Calendar, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, X, ChevronLeft, ChevronRight, PenTool } from 'lucide-react';
 
 const MONTHS = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -10,53 +26,198 @@ const MONTHS = [
 
 const DAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
-const ModernDatePicker = ({ 
-  value, 
-  onChange, 
-  label, 
-  minDate, 
+const ModernDatePicker = ({
+  value,
+  onChange,
+  label,
+  minDate,
   maxDate,
-  placeholder = 'Pilih tanggal'
+  placeholder = 'DD/MM/YYYY atau DDMMYYYY',
+  showFormatInfo = true
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [viewMode, setViewMode] = useState('days');
   const [currentMonth, setCurrentMonth] = useState(value ? new Date(value) : new Date());
-  const datePickerRef = useRef(null);
 
+  const [textInput, setTextInput] = useState('');
+  const [rawInput, setRawInput] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [hasUserTyped, setHasUserTyped] = useState(false); // NEW: track jika user sudah mengetik
+
+  const [error, setError] = useState('');
+  const [border, setBorder] = useState('border-slate-200 dark:border-slate-700');
+
+  const ref = useRef(null);
+
+  /* =======================
+     INIT VALUE
+  ======================= */
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
-        handleClose();
+    if (!isEditing && !hasUserTyped) {
+      if (value) {
+        const d = new Date(value);
+        if (isValid(d)) {
+          setTextInput(format(d, 'dd MMMM yyyy', { locale: id }));
+          setBorder('border-emerald-500');
+        }
+      } else {
+        setTextInput('');
+        setBorder('border-slate-200 dark:border-slate-700');
       }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleOpen = () => {
-    setIsOpen(true);
-    setIsAnimating(true);
-    setViewMode('days');
-  };
-
-  const handleClose = () => {
-    setIsAnimating(false);
-    setTimeout(() => setIsOpen(false), 200);
-  };
-
-  const handleDayClick = (day) => {
-    const isDisabled = (minDate && day < new Date(minDate)) || (maxDate && day > new Date(maxDate));
-    if (!isDisabled) {
-      onChange(format(day, 'yyyy-MM-dd'));
-      handleClose();
     }
+  }, [value, isEditing, hasUserTyped]);
+
+  /* =======================
+     PARSER FINAL (BLUR)
+  ======================= */
+  const parseFinalDate = (input) => {
+    const clean = input.trim();
+    if (!clean) return 'EMPTY'; // CHANGED: return 'EMPTY' untuk input kosong
+
+    const numbers = clean.replace(/\D/g, '');
+
+    let day, month, year;
+
+    if (numbers.length === 8) {
+      day = parseInt(numbers.slice(0, 2));
+      month = parseInt(numbers.slice(2, 4));
+      year = parseInt(numbers.slice(4, 8));
+    } else {
+      return null;
+    }
+
+    const date = new Date(year, month - 1, day);
+    if (!isValid(date)) return null;
+    if (date.getDate() !== day || date.getMonth() !== month - 1) return null;
+
+    if (minDate && date < new Date(minDate)) return 'MIN';
+    if (maxDate && date > new Date(maxDate)) return 'MAX';
+
+    return date;
   };
 
+  /* =======================
+     CLEAR FUNCTION
+  ======================= */
   const handleClear = (e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     onChange('');
+    setTextInput('');
+    setRawInput('');
+    setError('');
+    setBorder('border-slate-200 dark:border-slate-700');
+    setHasUserTyped(false);
+    setIsEditing(false);
+  };
+
+  /* =======================
+     INPUT HANDLERS
+  ======================= */
+const handleChange = (e) => {
+  const val = e.target.value;
+  
+  // Filter: hanya izinkan angka dan slash
+  const filtered = val.replace(/[^0-9/]/g, '');
+  
+  // Ekstrak hanya angka untuk cek panjang
+  const numbersOnly = filtered.replace(/\D/g, '');
+  
+  // Batasi maksimal 8 digit angka (DDMMYYYY)
+  if (numbersOnly.length > 8) {
+    return; // Langsung return, tidak update state
+  }
+  
+  setTextInput(filtered);
+  setRawInput(filtered);
+  setHasUserTyped(true);
+
+  // soft state, no hard error
+  setError('');
+  setBorder('border-emerald-400');
+
+  // Jika user menghapus semua karakter, auto clear
+  if (!filtered.trim()) {
+    handleClear();
+  }
+};
+
+  const handleFocus = () => {
+    setIsEditing(true);
+    if (rawInput) {
+      setTextInput(rawInput);
+    } else if (value) {
+      const d = new Date(value);
+      if (isValid(d)) {
+        const f = format(d, 'dd/MM/yyyy');
+        setTextInput(f);
+        setRawInput(f);
+      }
+    }
+    setBorder('border-emerald-500');
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+
+    if (!textInput.trim()) {
+      handleClear(); // NEW: Auto clear jika kosong
+      return;
+    }
+
+    const parsed = parseFinalDate(textInput);
+
+    if (parsed === 'EMPTY') {
+      handleClear(); // NEW: Auto clear
+      return;
+    }
+
+    if (parsed === null) {
+      // NEW: Format tidak valid → auto clear
+      handleClear();
+      setError('Format tidak valid, field dikosongkan');
+      setTimeout(() => setError(''), 2000); // Hanya tampilkan error sementara
+      return;
+    }
+
+    if (parsed === 'MIN') {
+      setError(`Tanggal minimal ${format(new Date(minDate), 'dd/MM/yyyy')}`);
+      setBorder('border-red-500');
+      return;
+    }
+
+    if (parsed === 'MAX') {
+      setError(`Tanggal maksimal ${format(new Date(maxDate), 'dd/MM/yyyy')}`);
+      setBorder('border-red-500');
+      return;
+    }
+
+    onChange(format(parsed, 'yyyy-MM-dd'));
+    setCurrentMonth(parsed);
+    setTextInput(format(parsed, 'dd MMMM yyyy', { locale: id }));
+    setBorder('border-emerald-500');
+    setError('');
+    setHasUserTyped(false); // Reset setelah valid
+  };
+
+  /* =======================
+     CALENDAR LOGIC
+  ======================= */
+  const handleDayClick = (day) => {
+    const disabled =
+      (minDate && day < new Date(minDate)) ||
+      (maxDate && day > new Date(maxDate));
+
+    if (disabled) return;
+
+    onChange(format(day, 'yyyy-MM-dd'));
+    setCurrentMonth(day);
+    setTextInput(format(day, 'dd MMMM yyyy', { locale: id }));
+    setRawInput(format(day, 'dd/MM/yyyy'));
+    setBorder('border-emerald-500');
+    setError('');
+    setHasUserTyped(false); // Reset karena pilih dari calendar
+    handleClose();
   };
 
   const handleMonthClick = (monthIndex) => {
@@ -99,29 +260,22 @@ const ModernDatePicker = ({
     }
   };
 
-  // Cek apakah hari Minggu (0 = Minggu di JavaScript)
   const isSunday = (day) => getDay(day) === 0;
 
-  // Generate calendar days
-  const generateCalendarDays = () => {
-    const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
-    const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
-
+  const generateDays = () => {
+    const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 });
+    const end = endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 });
     const days = [];
-    let day = startDate;
-
-    while (day <= endDate) {
-      days.push(day);
-      day = addDays(day, 1);
+    let d = start;
+    while (d <= end) {
+      days.push(d);
+      d = addDays(d, 1);
     }
-
     return days;
   };
 
   const renderCalendar = () => {
-    const days = generateCalendarDays();
+    const days = generateDays();
     const rows = [];
     let cells = [];
 
@@ -132,27 +286,26 @@ const ModernDatePicker = ({
       const isDisabled = (minDate && day < new Date(minDate)) || (maxDate && day > new Date(maxDate));
       const isSundayDay = isSunday(day);
 
-      // Tentukan warna untuk Minggu berdasarkan kondisi
-        let sundayColor = '';
-        let sundayHoverTextColor = '';
-        if (isSundayDay) {
+      let sundayColor = '';
+      let sundayHoverTextColor = '';
+      if (isSundayDay) {
         if (isSelected) {
-            sundayColor = 'text-white';
-            sundayHoverTextColor = 'text-white';
+          sundayColor = 'text-white';
+          sundayHoverTextColor = 'text-white';
         } else if (isDisabled) {
-            sundayColor = 'text-slate-600 dark:text-slate-500 opacity-50';
-            sundayHoverTextColor = 'text-slate-600 dark:text-slate-500 opacity-50';
+          sundayColor = 'text-slate-600 dark:text-slate-500 opacity-50';
+          sundayHoverTextColor = 'text-slate-600 dark:text-slate-500 opacity-50';
         } else if (isTodayDate && !isSelected) {
-            sundayColor = 'text-white';
-            sundayHoverTextColor = 'text-white';
+          sundayColor = 'text-white';
+          sundayHoverTextColor = 'text-white';
         } else if (!isCurrentMonth) {
-            sundayColor = 'text-slate-400 dark:text-slate-600 opacity-70';
-            sundayHoverTextColor = 'text-slate-400 dark:text-slate-600 opacity-70';
+          sundayColor = 'text-slate-400 dark:text-slate-600 opacity-70';
+          sundayHoverTextColor = 'text-slate-400 dark:text-slate-600 opacity-70';
         } else {
-            sundayColor = 'text-red-500 dark:text-red-400';
-            sundayHoverTextColor = 'hover:text-slate-900 dark:hover:text-white';
+          sundayColor = 'text-red-500 dark:text-red-400';
+          sundayHoverTextColor = 'hover:text-slate-900 dark:hover:text-white';
         }
-        }
+      }
 
       cells.push(
         <button
@@ -255,6 +408,49 @@ const ModernDatePicker = ({
     );
   };
 
+  /* =======================
+     CALENDAR CONTROLS
+  ======================= */
+  const handleOpen = () => {
+    setIsOpen(true);
+    setIsAnimating(true);
+    setViewMode('days');
+  };
+
+  const handleClose = () => {
+    setIsAnimating(false);
+    setTimeout(() => setIsOpen(false), 200);
+    // Format ulang text input saat menutup
+    if (value) {
+      const date = new Date(value);
+      if (isValid(date)) {
+        setTextInput(format(date, 'dd MMMM yyyy', { locale: id }));
+      }
+    }
+  };
+
+  const handleCalendarIconClick = (e) => {
+    e.stopPropagation();
+    if (isOpen) {
+      handleClose();
+    } else {
+      handleOpen();
+    }
+  };
+
+  /* =======================
+     CLICK OUTSIDE
+  ======================= */
+  useEffect(() => {
+    const click = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        handleClose();
+      }
+    };
+    document.addEventListener('mousedown', click);
+    return () => document.removeEventListener('mousedown', click);
+  }, []);
+
   return (
     <div className="space-y-2">
       {label && (
@@ -263,31 +459,51 @@ const ModernDatePicker = ({
         </label>
       )}
       
-      <div className="relative" ref={datePickerRef}>
-        <button
-          type="button"
-          onClick={() => isOpen ? handleClose() : handleOpen()}
-          className="group w-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl px-4 sm:px-5 py-3 sm:py-3.5 font-medium text-sm text-slate-900 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all duration-200 text-left flex items-center justify-between hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20"
-        >
-          <span className={`transition-colors duration-200 text-sm ${value ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
-            {value ? format(new Date(value), 'dd MMMM yyyy', { locale: id }) : placeholder}
-          </span>
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {value && (
+      <div className="relative" ref={ref}>
+        <div className="relative">
+          <input
+            value={textInput}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder={placeholder}
+            className={`w-full bg-white dark:bg-slate-900 border-2 ${border} rounded-xl px-4 sm:px-5 py-3 sm:py-3.5 font-medium text-sm text-slate-900 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all duration-200 pr-12 hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20`}
+          />
+          <div className="absolute right-0 top-0 h-full flex items-center gap-1.5 sm:gap-2 pr-3">
+            {/* NEW: Always show Clear button when user is typing or has value */}
+            {(textInput || hasUserTyped) && (
               <div
                 onClick={handleClear}
-                className="p-1 sm:p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                className="p-1 sm:p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
               >
                 <X size={14} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" />
               </div>
             )}
-            <Calendar 
-              className={`text-emerald-500 transition-all duration-200 ${isOpen ? 'rotate-12 scale-110' : 'group-hover:scale-110'}`} 
-              size={18} 
-            />
+            <div 
+              onClick={handleCalendarIconClick}
+              className={`p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer ${isOpen ? 'bg-emerald-50 dark:bg-emerald-950/30' : ''}`}
+            >
+              {isEditing ? (
+                <PenTool size={18} className="text-emerald-500" />
+              ) : (
+                <Calendar size={18} className={`text-emerald-500 transition-all duration-200 ${isOpen ? 'rotate-12 scale-110' : ''}`} />
+              )}
+            </div>
           </div>
-        </button>
+        </div>
+
+        {error && (
+          <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 ml-1 animate-fadeIn">
+            {error}
+          </p>
+        )}
         
+        {showFormatInfo && (
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 ml-1">
+            Contoh: <b>DDMMYYYY</b> atau <b>DD/MM/YYYY</b>
+          </p>
+        )}
+
         {isOpen && (
           <div 
             className={`absolute z-[60] mt-2 w-full min-w-[320px] sm:min-w-[360px] bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-2xl shadow-slate-300/60 dark:shadow-black/40 overflow-hidden transition-all duration-200 ${

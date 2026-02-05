@@ -60,6 +60,11 @@ const FormInput = ({
   const tunjanganErrorTimeoutRef = useRef(null);
   const cutiErrorTimeoutRef = useRef(null);
 
+  // Refs untuk input fields
+  const upahInputRef = useRef(null);
+  const tunjanganInputRef = useRef(null);
+  const cutiInputRef = useRef(null);
+
   // Opsi sistem hari kerja
   const opsiHariKerja = [
     { value: 'senin-jumat', label: 'Senin - Jumat' },
@@ -123,7 +128,7 @@ const FormInput = ({
   // Hitung total upah bulanan
   const totalUpahBulanan = (parseFloat(upahPokok) || 0) + (parseFloat(tunjanganTetap) || 0);
 
-  // Handler untuk upah pokok
+  // Handler untuk upah pokok dengan keyboard numeric di mobile
   const handleUpahPokokChange = (e) => {
     const inputValue = e.target.value;
     
@@ -164,7 +169,7 @@ const FormInput = ({
     e.target.value = formattedValue;
   };
 
-  // Handler untuk tunjangan tetap
+  // Handler untuk tunjangan tetap dengan keyboard numeric di mobile
   const handleTunjanganTetapChange = (e) => {
     const inputValue = e.target.value;
     
@@ -248,7 +253,7 @@ const FormInput = ({
     }
   };
 
-  // Handler untuk sisa cuti
+  // Handler untuk sisa cuti dengan keyboard numeric di mobile
   const handleSisaCutiChange = (e) => {
     const inputValue = e.target.value;
     
@@ -274,6 +279,14 @@ const FormInput = ({
     // Clear error jika ada
     if (sisaCutiError) {
       setSisaCutiError('');
+    }
+  };
+
+  // Fungsi untuk handle focus pada input numeric di mobile
+  const handleNumericInputFocus = (inputRef) => {
+    // Di mobile, set inputmode ke numeric untuk membuka keyboard angka
+    if (inputRef.current && window.innerWidth < 768) {
+      inputRef.current.setAttribute('inputmode', 'numeric');
     }
   };
 
@@ -362,7 +375,7 @@ const FormInput = ({
           ))}
         </div>
 
-        {/* Alasan PHK (hanya untuk PKWTT) - MENGGUNAKAN DROPDOWN MODERN */}
+        {/* Alasan PHK (hanya untuk PKWTT) - MENGGUNAKAN DROPDOWN MODERN DENGAN SEARCH */}
         {tipeKaryawan === 'PKWTT' && (
           <ModernDropdown
             value={alasanPhkId}
@@ -370,6 +383,7 @@ const FormInput = ({
             onChange={setAlasanPhkId}
             label="Alasan PHK (PP 35/2021)"
             icon={<FileText size={14} />}
+            searchable={true} // Tambahkan prop searchable
           />
         )}
 
@@ -391,10 +405,14 @@ const FormInput = ({
               Upah Pokok <span className="text-red-500">*</span>
             </label>
             <input 
+              ref={upahInputRef}
               type="text" 
               value={formatNumber(upahPokok)} 
               onChange={handleUpahPokokChange}
               onBlur={handleUpahPokokBlur}
+              onFocus={() => handleNumericInputFocus(upahInputRef)}
+              inputMode="numeric" // Untuk keyboard numeric di mobile
+              pattern="[0-9]*" // Untuk keyboard numeric di beberapa browser
               className={`w-full bg-slate-50 dark:bg-slate-950 border-2 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm focus:border-emerald-600 dark:focus:border-emerald-500 outline-none text-slate-900 dark:text-white transition-all hover:border-slate-300 dark:hover:border-slate-700 ${
                 (upahPokokError || tempUpahError) 
                   ? 'border-red-500 dark:border-red-500' 
@@ -413,10 +431,14 @@ const FormInput = ({
               Tunjangan Tetap
             </label>
             <input 
+              ref={tunjanganInputRef}
               type="text" 
               value={formatNumber(tunjanganTetap)} 
               onChange={handleTunjanganTetapChange}
               onBlur={handleTunjanganTetapBlur}
+              onFocus={() => handleNumericInputFocus(tunjanganInputRef)}
+              inputMode="numeric" // Untuk keyboard numeric di mobile
+              pattern="[0-9]*"
               className={`w-full bg-slate-50 dark:bg-slate-950 border-2 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm focus:border-emerald-600 dark:focus:border-emerald-500 outline-none text-slate-900 dark:text-white transition-all hover:border-slate-300 dark:hover:border-slate-700 ${
                 (tunjanganTetapError || tempTunjanganError) 
                   ? 'border-red-500 dark:border-red-500' 
@@ -457,6 +479,7 @@ const FormInput = ({
               label="Tanggal Mulai Kerja"
               maxDate={tanggalBerakhir}
               placeholder="Pilih tanggal mulai"
+              showFormatInfo={true} // Ini akan menampilkan info format
               required
             />
             <ModernDatePicker
@@ -465,6 +488,7 @@ const FormInput = ({
               label="Tanggal Berakhir/PHK"
               minDate={tanggalMulai}
               placeholder="Pilih tanggal berakhir"
+              showFormatInfo={false} // Ini TIDAK akan menampilkan info format
               required
             />
           </div>
@@ -489,15 +513,19 @@ const FormInput = ({
               Sisa Cuti Tahunan (Hari)
             </label>
             <input 
+              ref={cutiInputRef}
               type="text" 
               placeholder="0" 
               value={sisaCuti}
               onChange={handleSisaCutiChange}
+              onFocus={() => handleNumericInputFocus(cutiInputRef)}
               onBlur={(e) => {
                 if (e.target.value === '') {
                   setSisaCuti('0');
                 }
               }}
+              inputMode="numeric" // Untuk keyboard numeric di mobile
+              pattern="[0-9]*"
               className={`w-full bg-slate-50 dark:bg-slate-950 border-2 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm text-slate-900 dark:text-white focus:border-emerald-600 dark:focus:border-emerald-500 outline-none transition-all hover:border-slate-300 dark:hover:border-slate-700 ${
                 (sisaCutiError || tempCutiError) 
                   ? 'border-red-500 dark:border-red-500' 

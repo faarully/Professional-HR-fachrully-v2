@@ -73,7 +73,7 @@ const Hero = ({ data }) => {
               className="flex items-center gap-3 mb-6 mt-4 lg:mt-0"
             >
               <span className="h-[1.5px] w-8 bg-emerald-600 hidden lg:block"></span>
-              <span className="text-emerald-600 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.4em]">Human Resources Specialist</span>
+              <span className="text-emerald-600 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.4em]">Human Resources Transformation</span>
             </motion.div>
 
             <motion.h1 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, BookOpen, TrendingUp, CheckCircle, ChevronRight } from 'lucide-react';
+import { RefreshCw, BookOpen, Briefcase, CheckCircle, ChevronRight } from 'lucide-react';
 
 const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
   // Variants untuk animasi yang lebih tenang
@@ -123,7 +123,7 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                 duration: 0.3,
                 ease: "easeOut"
               }}
-              className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-500 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 text-white shadow-2xl shadow-emerald-600/40"
+              className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-500 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 text-white shadow-2xl shadow-emerald-600/40"
             >
               <motion.div
                 key={`container-${hasReset}`}
@@ -136,7 +136,7 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                 {/* Header */}
                 <motion.div 
                   variants={itemVariants}
-                  className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2"
+                  className="flex items-center justify-between mb-3 sm:mb-4 flex-wrap gap-2"
                 >
                   <div className="flex items-center gap-2">
                     <motion.div
@@ -148,7 +148,7 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                         delay: 0.1
                       }}
                     >
-                      <TrendingUp size={14} className="opacity-80" />
+                      <Briefcase size={16} className="opacity-80" />
                     </motion.div>
                     <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] opacity-80">
                       Estimasi Hak Pekerja
@@ -162,8 +162,8 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                   </motion.div>
                 </motion.div>
                 
-                {/* Progress bar indicator - dipertahankan */}
-                <div className="h-1 bg-white/20 rounded-full mb-4 overflow-hidden">
+                {/* Progress bar indicator */}
+                <div className="h-1 bg-white/20 rounded-full mb-3 sm:mb-4 overflow-hidden">
                   <motion.div 
                     key={`progress-${hasReset}`}
                     variants={progressBarVariants}
@@ -179,7 +179,12 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                   variants={amountVariants}
                   initial="hidden"
                   animate="visible"
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter mb-2 leading-none break-words"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter mb-2 leading-none break-all overflow-wrap-anywhere"
+                  style={{ 
+                    wordBreak: 'break-all',
+                    overflowWrap: 'anywhere',
+                    hyphens: 'auto'
+                  }}
                 >
                   {formatRupiah(hasil.total)}
                 </motion.h2>
@@ -191,10 +196,9 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                     variants={fadeInVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-xs sm:text-sm opacity-80 mb-6 sm:mb-8 flex items-center gap-2"
+                    className="text-xs sm:text-sm opacity-80 mb-4 sm:mb-6 flex items-center gap-2 flex-wrap"
                   >
-                    <CheckCircle size={12} />
-                    <span>Masa kerja: {hasil.masaKerja}</span>
+                    <span className="break-words">Masa kerja: {hasil.masaKerja}</span>
                   </motion.p>
                 )}
 
@@ -205,7 +209,7 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                     variants={itemVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 border border-white/20"
+                    className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-3 sm:mb-4 border border-white/20"
                   >
                     <p className="text-[10px] sm:text-xs font-bold opacity-70 mb-1 flex items-center gap-1">
                       <ChevronRight size={10} />
@@ -216,76 +220,98 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                   </motion.div>
                 )}
 
-                {/* Detail perhitungan */}
+                {/* Detail komponen - SIMPLIFIED LIST */}
                 <motion.div 
                   key={`detail-${hasReset}`}
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="space-y-3 sm:space-y-4 border-t border-white/20 pt-6 sm:pt-8 mb-4 sm:mb-6"
+                  className="mb-3 sm:mb-4"
                 >
-                  {hasil.detail.map((item, i) => (
-                    <motion.div 
-                      key={`detail-item-${i}-${hasReset}`}
-                      variants={detailItemVariants}
-                      custom={i}
-                      className="group rounded-lg sm:rounded-xl p-3 hover:bg-white/5 transition-colors duration-200"
-                    >
-                      <div className="flex justify-between items-start mb-1 gap-3">
-                        <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ChevronRight size={14} className="opacity-70 flex-shrink-0" />
+                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest opacity-70">
+                      Rincian Kompensasi
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-0">
+                    {hasil.detail.map((item, i) => (
+                      <motion.div 
+                        key={`detail-item-${i}-${hasReset}`}
+                        variants={detailItemVariants}
+                        custom={i}
+                        className="py-2 border-b border-white/10 last:border-0"
+                      >
+                        {/* Label dan nilai - Simple list format */}
+                        <div className="flex items-start gap-2 mb-1">
                           <motion.span 
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: i * 0.05 + 0.2 }}
-                            className="w-1.5 h-1.5 rounded-full bg-white/60"
+                            className="w-1 h-1 rounded-full bg-white/60 flex-shrink-0 mt-1.5"
                           />
-                          <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest opacity-80 flex-shrink-0">
-                            {item.label}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wide opacity-80 break-words mb-0.5">
+                              {item.label}
+                            </p>
+                            {item.isTextOnly ? (
+                              <p className="text-xs sm:text-sm font-semibold italic opacity-90 break-words">
+                                Berhak Atas Uang Pisah
+                              </p>
+                            ) : (
+                              <>
+                                <motion.p 
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: i * 0.05 + 0.3 }}
+                                  className="font-black text-base sm:text-lg break-all"
+                                  style={{ 
+                                    wordBreak: 'break-all',
+                                    overflowWrap: 'anywhere'
+                                  }}
+                                >
+                                  {formatRupiah(item.value)}
+                                </motion.p>
+                                {item.keterangan && (
+                                  <motion.p 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: i * 0.05 + 0.4 }}
+                                    className="text-[9px] sm:text-[10px] opacity-60 leading-relaxed mt-0.5 break-words"
+                                    style={{ 
+                                      wordBreak: 'break-word',
+                                      overflowWrap: 'break-word'
+                                    }}
+                                  >
+                                    {item.keterangan}
+                                  </motion.p>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </div>
-                        {item.isTextOnly ? (
-                          <span className="text-xs sm:text-sm font-medium italic opacity-90 text-right">
-                            Berhak Atas Uang Pisah
-                          </span>
-                        ) : (
-                          <motion.span 
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.05 + 0.3 }}
-                            className="font-black text-base sm:text-lg text-right break-words"
+                        
+                        {/* Catatan khusus */}
+                        {item.catatanPisah && (
+                          <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.05 + 0.5 }}
+                            className="mt-1.5 ml-3 p-2 bg-white/10 rounded-lg backdrop-blur-sm"
                           >
-                            {formatRupiah(item.value)}
-                          </motion.span>
+                            <p className="text-[9px] sm:text-[10px] opacity-90 leading-relaxed italic break-words"
+                               style={{ 
+                                 wordBreak: 'break-word',
+                                 overflowWrap: 'break-word'
+                               }}>
+                              {item.catatanPisah}
+                            </p>
+                          </motion.div>
                         )}
-                      </div>
-                      
-                      {/* Keterangan */}
-                      {!item.isTextOnly && item.keterangan && (
-                        <motion.p 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: i * 0.05 + 0.4 }}
-                          className="text-[10px] sm:text-xs opacity-60 leading-relaxed mt-1 break-words"
-                        >
-                          {item.keterangan}
-                        </motion.p>
-                      )}
-                      
-                      {/* Catatan khusus */}
-                      {item.catatanPisah && (
-                        <motion.div 
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: i * 0.05 + 0.5 }}
-                          className="mt-2 p-2 sm:p-3 bg-white/10 rounded-lg sm:rounded-xl backdrop-blur-sm"
-                        >
-                          <p className="text-[10px] sm:text-xs opacity-90 leading-relaxed italic break-words">
-                            {item.catatanPisah}
-                          </p>
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </div>
                 </motion.div>
 
                 {/* Catatan dan Penjelasan */}
@@ -295,10 +321,10 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                     variants={fadeInVariants}
                     initial="hidden"
                     animate="visible"
-                    className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-white/10"
+                    className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/10"
                   >
-                    <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                      <BookOpen size={14} className="opacity-70" />
+                    <div className="flex items-center gap-2 mb-2">
+                      <BookOpen size={14} className="opacity-70 flex-shrink-0" />
                       <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest opacity-70">
                         Catatan dan Penjelasan
                       </p>
@@ -311,9 +337,13 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.2 }}
                           className="text-[10px] sm:text-xs opacity-70 leading-relaxed break-words flex items-start gap-1"
+                          style={{ 
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word'
+                          }}
                         >
                           <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/40 mt-1.5 flex-shrink-0" />
-                          {hasil.catatan}
+                          <span className="break-words">{hasil.catatan}</span>
                         </motion.p>
                       )}
                       
@@ -324,9 +354,13 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.3 + i * 0.1 }}
                           className="text-[10px] sm:text-xs opacity-70 leading-relaxed break-words flex items-start gap-1"
+                          style={{ 
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word'
+                          }}
                         >
                           <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/40 mt-1.5 flex-shrink-0" />
-                          {penjelasan}
+                          <span className="break-words">{penjelasan}</span>
                         </motion.p>
                       ))}
                     </div>
@@ -340,23 +374,47 @@ const HasilPerhitungan = ({ hasil, tipeKaryawan, formatRupiah, hasReset }) => {
                     variants={itemVariants}
                     initial="hidden"
                     animate="visible"
-                    className="mt-6 sm:mt-8"
+                    className="mt-4 sm:mt-6"
                   >
-                    <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/20">
-                      <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                        <div className="p-1.5 bg-white/20 rounded-lg">
-                          <BookOpen size={16} className="opacity-80 flex-shrink-0" />
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
+                      <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                        <div className="p-1.5 bg-white/20 rounded-lg flex-shrink-0">
+                          <BookOpen size={16} className="opacity-80" />
                         </div>
-                        <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest opacity-80 break-words">
-                          Referensi Hukum ({hasil.pasalInfo.judul.split(' - ')[0]})
+                        <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest opacity-80 break-words"
+                           style={{ 
+                             wordBreak: 'break-word',
+                             overflowWrap: 'break-word'
+                           }}>
+                          Referensi Hukum: {(() => {
+                                const judul = hasil.pasalInfo.judul.split(' - ')[0];
+                                // Jika sudah ada tanda kurung di judul, gunakan langsung
+                                if (judul.includes('(')) {
+                                  return judul;
+                                }
+                                // Jika tidak, tambahkan info ayat dari bagian kedua
+                                const ayatInfo = hasil.pasalInfo.judul.split(' - ')[1] || '';
+                                if (ayatInfo.includes('ayat')) {
+                                  return `${judul} (${ayatInfo})`;
+                                }
+                                return judul;
+                              })()}
                         </p>
                       </div>
                       
-                      <p className="text-[10px] sm:text-xs leading-relaxed opacity-90 text-justify mb-2 sm:mb-3 italic break-words relative pl-3 border-l-2 border-white/30">
+                      <p className="text-[10px] sm:text-xs leading-relaxed opacity-90 text-justify mb-2 italic break-words relative pl-3 border-l-2 border-white/30"
+                         style={{ 
+                           wordBreak: 'break-word',
+                           overflowWrap: 'break-word'
+                         }}>
                         "{hasil.pasalInfo.isi}"
                       </p>
                       
-                      <p className="text-[9px] sm:text-[10px] uppercase tracking-wide sm:tracking-wider opacity-60 mt-3 sm:mt-4 break-words">
+                      <p className="text-[9px] sm:text-[10px] uppercase tracking-wide sm:tracking-wider opacity-60 mt-2 sm:mt-3 break-words"
+                         style={{ 
+                           wordBreak: 'break-word',
+                           overflowWrap: 'break-word'
+                         }}>
                         PP No. 35 Tahun 2021 tentang Perjanjian Kerja Waktu Tertentu, Alih Daya, Waktu Kerja dan Waktu Istirahat, dan Pemutusan Hubungan Kerja
                       </p>
                     </div>
