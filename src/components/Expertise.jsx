@@ -5,12 +5,12 @@ const Expertise = ({ skills }) => {
   if (!skills) return null;
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 15 }, // Jarak Y diperkecil agar tidak terlalu jauh melompat
+    hidden: { opacity: 0, y: 15 },
     visible: (i) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.05, // Delay dipercepat agar lebih snappy
+        delay: i * 0.05,
         duration: 0.4,
         ease: "easeOut",
       }
@@ -50,15 +50,17 @@ const Expertise = ({ skills }) => {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}
-                // HAPUS whileHover Y di sini karena sering bikin flicker saat scroll
                 style={{ 
                    willChange: "transform, opacity",
                    WebkitBackfaceVisibility: "hidden" 
                 }}
-                // Pakai class hover standar Tailwind (lebih stabil untuk bayangan berat)
-                className="bg-white dark:bg-slate-900/80 rounded-3xl border border-slate-100 dark:border-slate-800 group 
-                           hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/20 
-                           transition-transform transition-shadow duration-300 ease-out overflow-hidden transform-gpu"
+                /* PENYESUAIAN WARNA CARD:
+                   - Light: bg-[#FFFFF0] (Ivory) agar senada dengan background App.
+                   - Dark: bg-slate-900 (Solid) agar benar-benar gelap.
+                */
+                className="bg-[#FFFFF0] dark:bg-slate-900 rounded-3xl border border-emerald-600/10 dark:border-slate-800 group 
+                           hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 
+                           transition-all duration-300 ease-out overflow-hidden transform-gpu"
               >
                 <div className="p-10 md:p-12">
                   <div className="mb-10 flex flex-col items-start">
@@ -71,7 +73,11 @@ const Expertise = ({ skills }) => {
                     {tags.map((tag, i) => (
                       <span 
                         key={i}
-                        className="px-4 py-2 bg-slate-100/50 dark:bg-slate-800/50 text-[10px] md:text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase tracking-widest rounded-lg border border-slate-200/50 dark:border-slate-700 group-hover:border-emerald-500/30 transition-colors duration-300 cursor-default whitespace-nowrap"
+                        /* PENYESUAIAN WARNA TAG:
+                           - Light: bg-emerald-600/5 & text-slate-700
+                           - Dark: bg-slate-800 & text-slate-200
+                        */
+                        className="px-4 py-2 bg-emerald-600/5 dark:bg-slate-800/80 text-[10px] md:text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase tracking-widest rounded-lg border border-emerald-600/10 dark:border-slate-700 group-hover:border-emerald-500/30 transition-colors duration-300 cursor-default whitespace-nowrap"
                       >
                         {tag.trim()}
                       </span>

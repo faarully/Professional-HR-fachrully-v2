@@ -39,7 +39,8 @@ const HomeContent = ({ data, visibility }) => (
     {visibility.experience && <Experience experiences={data?.Experience} />}
     {visibility.education && <Education education={data?.Education} />}
 
-    <section id="contact" className="py-40 bg-slate-50 dark:bg-slate-950 relative overflow-hidden transition-colors duration-500">
+    {/* Section Contact: bg-slate-50 diganti ke transparent agar mengikuti Ivory dari parent */}
+    <section id="contact" className="py-40 bg-transparent dark:bg-slate-950 relative overflow-hidden transition-colors duration-500">
       <div className="max-w-5xl mx-auto px-6 text-center">
         <motion.div 
           initial={{ opacity: 0, y: 40 }} 
@@ -75,7 +76,6 @@ export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  // State Global untuk mengontrol semua visibilitas komponen
   const [visibility, setVisibility] = useState(DEFAULT_VISIBILITY);
 
   useEffect(() => {
@@ -92,8 +92,6 @@ export default function App() {
     };
     fetchData();
 
-    // EXPOSE TO CONSOLE
-    // Cara pakai di console: check('hero', false) atau check('navbar', false)
     window.check = (componentName, isVisible) => {
       setVisibility(prev => ({
         ...prev,
@@ -102,7 +100,6 @@ export default function App() {
       console.log(`Setting ${componentName} visibility to: ${isVisible}`);
     };
 
-    // Shortcut untuk matikan semua kecuali satu
     window.isolate = (name) => {
       const isolation = Object.keys(DEFAULT_VISIBILITY).reduce((acc, key) => {
         acc[key] = key === name;
@@ -111,7 +108,6 @@ export default function App() {
       setVisibility(isolation);
     };
 
-    // Reset semua
     window.resetDebug = () => setVisibility(DEFAULT_VISIBILITY);
 
   }, []);
@@ -120,7 +116,10 @@ export default function App() {
 
   return (
     <Router>
-      <div className="relative min-h-screen bg-slate-200 dark:bg-slate-950 font-sans selection:bg-emerald-100 dark:selection:bg-emerald-900 selection:text-emerald-900 dark:selection:text-emerald-100 text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden">
+      {/* PERBAIKAN: Hapus inline style, gunakan Tailwind class untuk background */}
+      <div 
+        className="relative min-h-screen bg-[#FFFFF0] dark:bg-slate-950 font-sans selection:bg-emerald-100 dark:selection:bg-emerald-900 selection:text-emerald-900 dark:selection:text-emerald-100 text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden"
+      >
         
         <AnimatePresence mode="wait">
           {loading && <Loader key="loader" />}
@@ -140,7 +139,8 @@ export default function App() {
             </Routes>
 
             {visibility.footer && (
-              <footer className="bg-white dark:bg-slate-900/30 py-20 border-t border-slate-200 dark:border-slate-800 transition-colors duration-500 relative">
+              /* Footer bg diganti ke transparent agar menyatu dengan background ivory */
+              <footer className="bg-transparent dark:bg-slate-900/30 py-20 border-t border-slate-200 dark:border-slate-800 transition-colors duration-500 relative">
                 <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12 text-center">
                   <div 
                     className="text-2xl font-black italic text-slate-900 dark:text-white cursor-pointer" 

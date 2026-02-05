@@ -14,11 +14,8 @@ const Hero = ({ data }) => {
 
   const { scrollY } = useScroll();
 
-  // Range diperlebar agar gerakan dan pudarnya lebih smooth (tidak buru-buru hilang)
   const yText = useTransform(scrollY, [0, 800], [0, 120]);
   const yImage = useTransform(scrollY, [0, 800], [0, -80]);
-  
-  // Konten tetap terlihat jelas sampai scroll 200px, baru memudar total di 700px
   const opacityScroll = useTransform(scrollY, [0, 200, 700], [1, 1, 0]);
 
   if (!data) return null;
@@ -28,14 +25,16 @@ const Hero = ({ data }) => {
   return (
     <section 
       id="about" 
-      className="relative min-h-screen flex items-center overflow-hidden bg-white dark:bg-slate-950 pt-28 lg:pt-24 pb-32 lg:pb-40 transition-colors duration-500 font-sans"
+      /* bg-white diganti ke bg-transparent agar warna Ivory dari App.jsx terlihat */
+      className="relative min-h-screen flex items-center overflow-hidden bg-transparent dark:bg-slate-950 pt-28 lg:pt-24 pb-32 lg:pb-40 transition-colors duration-500 font-sans"
     >
       <div className="w-full relative h-full flex items-center">
         
         {/* Background Decor */}
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
           <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500/10 dark:bg-emerald-500/5 blur-[120px] rounded-full" />
-          <div className="absolute bottom-0 left-0 w-[30%] h-[60%] bg-slate-100/50 dark:bg-slate-900/20 blur-[100px]" />
+          {/* bg-slate-100 pudar diganti agar lebih blend dengan Ivory */}
+          <div className="absolute bottom-0 left-0 w-[30%] h-[60%] bg-emerald-100/20 dark:bg-slate-900/20 blur-[100px]" />
         </div>
 
         <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
@@ -49,8 +48,9 @@ const Hero = ({ data }) => {
           >
             <div className="absolute -top-6 -right-6 -bottom-6 -left-6 border-[16px] border-emerald-600/10 dark:border-emerald-500/5 rounded-[2.5rem] lg:rounded-none lg:rounded-r-[12rem] pointer-events-none z-0 hidden lg:block transition-all duration-500 group-hover:scale-105" />
             
-            <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none overflow-hidden rounded-[2rem] lg:rounded-none lg:rounded-r-[10rem] shadow-2xl bg-white dark:bg-slate-900 z-10 border-[6px] border-white dark:border-slate-800">
-              <div className="absolute inset-y-0 right-0 w-1/3 z-20 bg-gradient-to-l from-white/30 dark:from-slate-950/30 to-transparent hidden lg:block" />
+            {/* Border white pada foto diganti menjadi ivory (#FFFFF0) agar tidak terlihat garis putih terang */}
+            <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none overflow-hidden rounded-[2rem] lg:rounded-none lg:rounded-r-[10rem] shadow-2xl bg-[#FFFFF0] dark:bg-slate-900 z-10 border-[6px] border-[#FFFFF0] dark:border-slate-800">
+              <div className="absolute inset-y-0 right-0 w-1/3 z-20 bg-gradient-to-l from-emerald-600/5 dark:from-slate-950/30 to-transparent hidden lg:block" />
               <img 
                 src={data['URL Photo'] || 'https://via.placeholder.com/800x1000'} 
                 alt={data['Nama']} 
@@ -101,10 +101,11 @@ const Hero = ({ data }) => {
               transition={{ delay: 1.2, duration: 0.8 }}
               className="flex flex-wrap justify-center lg:justify-start gap-3 mb-10"
             >
-              <div className="flex items-center gap-2 px-5 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-full text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+              {/* Badge info menggunakan bg-emerald-600/5 agar lebih "clean" di atas Ivory */}
+              <div className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600/5 dark:bg-slate-900 border border-emerald-600/10 dark:border-slate-800 rounded-full text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                 <MapPin size={14} className="text-emerald-600" /> {data['Lokasi']}
               </div>
-              <a href={`mailto:${data['Email']}`} className="flex items-center gap-2 px-5 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-full text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-emerald-600 hover:border-emerald-200 transition-all">
+              <a href={`mailto:${data['Email']}`} className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600/5 dark:bg-slate-900 border border-emerald-600/10 dark:border-slate-800 rounded-full text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-emerald-600 hover:border-emerald-200 transition-all">
                 <Mail size={14} className="text-emerald-600" /> {data['Email']}
               </a>
             </motion.div>
