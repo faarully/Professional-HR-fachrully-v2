@@ -33,6 +33,11 @@ const addGlobalStyles = () => {
         .animate-fadeIn {
           animation: fadeIn 0.15s ease-out;
         }
+        
+        /* Prevent horizontal scroll on mobile */
+        body {
+          overflow-x: hidden;
+        }
       `;
       document.head.appendChild(style);
     }
@@ -316,26 +321,26 @@ const KalkulatorPesangon = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center pt-32 pb-12 px-4 sm:px-6 font-sans">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center pt-16 sm:pt-24 lg:pt-32 pb-8 sm:pb-12 px-3 sm:px-4 lg:px-6 font-sans">
         <div className="max-w-7xl w-full">
           {/* Header */}
-          <header className="mb-12 text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-[3px] bg-gradient-to-r from-emerald-600 to-teal-500"></div>
-              <span className="text-emerald-600 text-xs font-bold tracking-[0.3em] uppercase">
+          <header className="mb-8 sm:mb-12 text-center">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="w-8 sm:w-12 h-[2px] sm:h-[3px] bg-gradient-to-r from-emerald-600 to-teal-500"></div>
+              <span className="text-emerald-600 text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase">
                 HR Digitazion By Fachrully
               </span>
-              <div className="w-12 h-[3px] bg-gradient-to-l from-emerald-600 to-teal-500"></div>
+              <div className="w-8 sm:w-12 h-[2px] sm:h-[3px] bg-gradient-to-l from-emerald-600 to-teal-500"></div>
             </div>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-3">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-2 sm:mb-3 leading-tight">
               Severance <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Calculator</span>
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto px-4">
               Kalkulator Pesangon berdasarkan PP 35/2021 & Undang - Undang Cipta Kerja
             </p>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
             {/* Form Input */}
             <FormInput
               tipeKaryawan={tipeKaryawan}
@@ -372,7 +377,7 @@ const KalkulatorPesangon = () => {
           </div>
 
           {/* Footer */}
-          <footer className="mt-16 text-center text-xs text-slate-500 dark:text-slate-600 space-y-2">
+          <footer className="mt-12 sm:mt-16 text-center text-xs text-slate-500 dark:text-slate-600 space-y-2 px-4">
             <p className="font-bold">© 2026 Severance Calculator</p>
             <p className="text-[10px] max-w-2xl mx-auto leading-relaxed">
               Disclaimer: Kalkulator ini hanya sebagai alat bantu perhitungan estimasi. 
@@ -392,23 +397,23 @@ const KalkulatorPesangon = () => {
           />
           
           {/* Modal Content Minimalis */}
-          <div className="relative z-10 w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-2xl shadow-black/30 dark:shadow-black/60 overflow-hidden animate-fadeIn"
+          <div className="relative z-10 w-full max-w-sm bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-300 dark:border-slate-700 shadow-2xl shadow-black/30 dark:shadow-black/60 overflow-hidden animate-fadeIn"
                style={modalAnimationStyle}>
-            <div className="px-6 py-6 text-center">
+            <div className="px-5 sm:px-6 py-5 sm:py-6 text-center">
               <div className="mb-4">
-                <div className="inline-flex p-3 bg-amber-100 dark:bg-amber-900/40 rounded-full">
-                  <AlertCircle className="text-amber-600 dark:text-amber-400" size={28} />
+                <div className="inline-flex p-2.5 sm:p-3 bg-amber-100 dark:bg-amber-900/40 rounded-full">
+                  <AlertCircle className="text-amber-600 dark:text-amber-400" size={24} />
                 </div>
               </div>
               
-              <p className="text-slate-800 dark:text-slate-200 text-base font-medium leading-relaxed mb-6">
+              <p className="text-slate-800 dark:text-slate-200 text-sm sm:text-base font-medium leading-relaxed mb-5 sm:mb-6 px-2">
                 {modalMessage}
               </p>
               
               <div className="flex gap-3">
                 <button
                   onClick={closeModal}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold py-3 rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all active:scale-[0.98]"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold py-2.5 sm:py-3 rounded-lg sm:rounded-xl hover:from-emerald-700 hover:to-teal-600 transition-all active:scale-[0.98] text-sm"
                 >
                   Mengerti
                 </button>
