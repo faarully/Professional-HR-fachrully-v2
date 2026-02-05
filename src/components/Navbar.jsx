@@ -84,7 +84,8 @@ const Navbar = ({ whatsappNumber }) => {
     { name: 'Experience', link: '#experience', homeOnly: true },
     { name: 'Education', link: '#education', homeOnly: true },
     { 
-      name: 'My Projects', 
+      name: 'MyPROJECTS', 
+      displayName: 'MyPROJECTS',
       link: null, 
       sub: [{ name: 'Kalkulator Pesangon', link: '/kalkulator-pesangon' }] 
     },
@@ -99,6 +100,19 @@ const Navbar = ({ whatsappNumber }) => {
   const path2Variants = {
     closed: { d: "M 8 16 L 22 16", strokeWidth: 1.5 },
     open: { d: "M 19 5 L 5 19", strokeWidth: 1.5 }
+  };
+
+  // Fungsi untuk render nama dengan formatting khusus untuk MyPROJECTS
+  const renderMenuItemName = (item) => {
+    if (item.name === 'MyPROJECTS') {
+      return (
+        <>
+          <span className="normal-case">My</span>
+          <span className="uppercase">PROJECTS</span>
+        </>
+      );
+    }
+    return item.displayName || item.name;
   };
 
   return (
@@ -117,7 +131,7 @@ const Navbar = ({ whatsappNumber }) => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
                 onClick={handleBackClick}
-                className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer" // TAMBAHKAN cursor-pointer DI SINI
+                className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer"
               >
                 <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                 <span>Back</span>
@@ -135,7 +149,7 @@ const Navbar = ({ whatsappNumber }) => {
             </Link>
           </div>
 
-          {/* DESKTOP MENU - Ditambahkan 'relative' */}
+          {/* DESKTOP MENU */}
           <div className="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-white/70 relative">
             {menuItems.map((item) => (
               <div 
@@ -146,12 +160,16 @@ const Navbar = ({ whatsappNumber }) => {
               >
                 {item.link ? (
                    <a href={item.link} onClick={(e) => handleNavClick(e, item.link)} className="flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative cursor-pointer">
-                     {item.name}
+                     <span className={item.name === 'MyPROJECTS' ? '' : 'uppercase'}>
+                       {renderMenuItemName(item)}
+                     </span>
                      <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-emerald-600 transition-all group-hover:w-full" />
                    </a>
                 ) : (
                   <button className="flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors relative cursor-pointer">
-                    {item.name}
+                    <span className={item.name === 'MyPROJECTS' ? '' : 'uppercase'}>
+                      {renderMenuItemName(item)}
+                    </span>
                     {item.sub && <ChevronDown size={12} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />}
                   </button>
                 )}
@@ -195,9 +213,10 @@ const Navbar = ({ whatsappNumber }) => {
               Contact Me
             </motion.a>
 
+            {/* HAMBURGER BUTTON */}
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[102] cursor-pointer" // TAMBAHKAN cursor-pointer DI SINI
+              className="md:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[150] cursor-pointer"
             >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <motion.path
@@ -233,6 +252,7 @@ const Navbar = ({ whatsappNumber }) => {
         )}
       </nav>
 
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -240,7 +260,7 @@ const Navbar = ({ whatsappNumber }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-white dark:bg-slate-950 z-[98] flex flex-col p-8 pt-32 md:hidden overflow-y-auto relative"
+            className="fixed inset-0 bg-white dark:bg-slate-950 z-[98] flex flex-col p-8 pt-32 md:hidden overflow-y-auto"
           >
             {/* Tombol Back di mobile menu */}
             {!isHomePage && (
@@ -252,7 +272,7 @@ const Navbar = ({ whatsappNumber }) => {
                   handleBackClick();
                   setIsOpen(false);
                 }}
-                className="absolute top-8 left-8 flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer" // TAMBAHKAN cursor-pointer DI SINI
+                className="absolute top-8 left-8 flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer"
               >
                 <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                 <span className="text-sm font-medium">Back</span>
@@ -261,7 +281,7 @@ const Navbar = ({ whatsappNumber }) => {
 
             <motion.div layout className="flex flex-col space-y-6 relative">
               {menuItems.map((item) => {
-                const isMyProjects = item.name === 'My Projects';
+                const isMyProjects = item.name === 'MyPROJECTS';
                 return (
                   <AnimatePresence key={item.name} mode="popLayout">
                     {(!mobileSubOpen || isMyProjects) && (
@@ -278,9 +298,17 @@ const Navbar = ({ whatsappNumber }) => {
                             <motion.button 
                               whileTap={{ scale: 0.98 }}
                               onClick={() => setMobileSubOpen(!mobileSubOpen)}
-                              className="flex items-center justify-between w-full text-4xl font-black uppercase tracking-tighter transition-colors duration-300 text-left text-slate-900 dark:text-white hover:text-emerald-600 active:text-emerald-600 cursor-pointer"
+                              className="flex items-center justify-between w-full text-4xl font-black tracking-tighter transition-colors duration-300 text-left text-slate-900 dark:text-white hover:text-emerald-600 active:text-emerald-600 cursor-pointer"
                             >
-                              {item.name}
+                              {/* Render khusus untuk mobile MyPROJECTS */}
+                              {item.name === 'MyPROJECTS' ? (
+                                <span>
+                                  <span className="normal-case">My</span>
+                                  <span className="uppercase">PROJECTS</span>
+                                </span>
+                              ) : (
+                                <span className="uppercase">{item.displayName || item.name}</span>
+                              )}
                               <span className="text-emerald-600">
                                 {mobileSubOpen ? <Minus size={32} /> : <Plus size={32} />}
                               </span>
