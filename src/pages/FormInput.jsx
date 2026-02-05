@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Calculator, RefreshCw, FileText, AlertCircle, Clock } from 'lucide-react';
+import { Calculator, RefreshCw, FileText, AlertCircle, Clock, Loader2 } from 'lucide-react';
 import { daftarAlasan } from './constants';
 import ModernDropdown from './ModernDropdown';
 import ModernDatePicker from './ModernDatePicker';
+import { motion } from 'framer-motion';
 
 // Fungsi helper untuk format dan parse angka
 const formatNumber = (num) => {
@@ -50,6 +51,9 @@ const FormInput = ({
   const [tempUpahError, setTempUpahError] = useState('');
   const [tempTunjanganError, setTempTunjanganError] = useState('');
   const [tempCutiError, setTempCutiError] = useState('');
+  
+  // State untuk animasi loading saat hitung
+  const [isCalculating, setIsCalculating] = useState(false);
 
   // Refs untuk timeout
   const upahErrorTimeoutRef = useRef(null);
@@ -299,24 +303,62 @@ const FormInput = ({
     reset();
   };
 
+  // Handler untuk hitung dengan animasi loading
+  const handleHitung = () => {
+    setIsCalculating(true);
+    
+    // Delay untuk animasi loading
+    setTimeout(() => {
+      hitungKompensasi();
+      setIsCalculating(false);
+      
+      // Smooth scroll ke hasil perhitungan setelah delay kecil
+      setTimeout(() => {
+        // Scroll ke hasil di mobile
+        if (window.innerWidth < 1024) { // lg breakpoint
+          const hasilElement = document.querySelector('.hasil-perhitungan-container');
+          if (hasilElement) {
+            hasilElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start',
+              inline: 'nearest'
+            });
+          }
+        }
+      }, 100);
+    }, 800); // 800ms delay untuk efek smooth
+  };
+
   return (
     <div className="lg:col-span-7 space-y-4 sm:space-y-6">
       <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-4 sm:space-y-6">
         
         {/* Toggle PKWTT/PKWT */}
-        <div className="flex p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl sm:rounded-2xl gap-1 sm:gap-0">
+        <div className="flex p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl sm:rounded-2xl gap-1 sm:gap-0 relative">
           {['PKWTT', 'PKWT'].map(t => (
-            <button 
+            <motion.button 
               key={t} 
-              onClick={() => {setTipeKaryawan(t); setHasil(null);}} 
-              className={`flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black tracking-wider sm:tracking-widest uppercase transition-all duration-300 ${
+              onClick={() => {setTipeKaryawan(t); setHasil(null);}}
+              whileHover={{ scale: tipeKaryawan !== t ? 1.02 : 1 }}
+              whileTap={{ scale: 0.98 }}
+              className={`relative flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black tracking-wider sm:tracking-widest uppercase transition-all duration-300 overflow-hidden ${
                 tipeKaryawan === t 
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-600/30' 
+                  ? 'text-white shadow-lg shadow-emerald-600/30 z-10' 
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
-              {t === 'PKWTT' ? 'PERMANENT' : 'CONTRACT'}
-            </button>
+              {/* Animated background untuk button aktif */}
+              {tipeKaryawan === t && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-500"
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <span className="relative z-10">
+                {t === 'PKWTT' ? 'PERMANENT' : 'CONTRACT'}
+              </span>
+            </motion.button>
           ))}
         </div>
 
@@ -475,25 +517,60 @@ const FormInput = ({
 
         {/* Tombol Aksi */}
         <div className="flex gap-2 sm:gap-3">
-          <button 
-            onClick={hitungKompensasi}
-            disabled={!isFormValid()}
-            className={`flex-1 font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] py-4 sm:py-5 rounded-xl sm:rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm ${
-              isFormValid()
+          <motion.button 
+            onClick={handleHitung}
+            disabled={!isFormValid() || isCalculating}
+            whileHover={isFormValid() && !isCalculating ? { scale: 1.02 } : {}}
+            whileTap={isFormValid() && !isCalculating ? { scale: 0.98 } : {}}
+            className={`relative flex-1 font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] py-4 sm:py-5 rounded-xl sm:rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm overflow-hidden ${
+              isFormValid() && !isCalculating
                 ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white hover:from-emerald-700 hover:to-teal-600 shadow-emerald-600/30 cursor-pointer'
                 : 'bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-500 cursor-not-allowed shadow-none'
             }`}
           >
-            <Calculator size={18} className="flex-shrink-0" /> 
-            <span className="hidden xs:inline">Hitung Pesangon</span>
-            <span className="xs:hidden">Hitung</span>
-          </button>
-          <button 
-            onClick={handleReset} 
+            {/* Shimmer effect saat calculating */}
+            {isCalculating && (
+              <motion.div
+                initial={{ x: '-100%' }}
+                animate={{ x: '200%' }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1,
+                  ease: 'linear'
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                style={{ transform: 'skewX(-20deg)' }}
+              />
+            )}
+            
+            {/* Icon dengan animasi */}
+            {isCalculating ? (
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              >
+                <Loader2 size={18} className="flex-shrink-0" />
+              </motion.div>
+            ) : (
+              <Calculator size={18} className="flex-shrink-0" />
+            )}
+            
+            <span className="hidden xs:inline relative z-10">
+              {isCalculating ? 'Menghitung...' : 'Hitung Pesangon'}
+            </span>
+            <span className="xs:hidden relative z-10">
+              {isCalculating ? 'Menghitung...' : 'Hitung'}
+            </span>
+          </motion.button>
+          
+          <motion.button 
+            onClick={handleReset}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className="px-4 sm:px-6 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black uppercase tracking-wider sm:tracking-widest py-4 sm:py-5 rounded-xl sm:rounded-2xl hover:bg-slate-300 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
           >
             <RefreshCw size={16} />
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

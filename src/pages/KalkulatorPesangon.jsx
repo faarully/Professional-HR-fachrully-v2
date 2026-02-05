@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FormInput from './FormInput';
 import HasilPerhitungan from './HasilPerhitungan';
 import { pasalDatabase, daftarAlasan } from './constants';
-import { AlertCircle, X } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 // Pindahkan animasi ke CSS global atau gunakan inline style
 const modalAnimationStyle = {
@@ -61,6 +61,9 @@ const KalkulatorPesangon = () => {
   // State untuk modal
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  
+  // State untuk reset animasi
+  const [animationResetCount, setAnimationResetCount] = useState(0);
 
   // Tambahkan global styles saat komponen mount
   useEffect(() => {
@@ -128,6 +131,9 @@ const KalkulatorPesangon = () => {
   }, [tanggalMulai, tanggalBerakhir]);
 
   const hitungKompensasi = () => {
+    // Reset animasi sebelum perhitungan
+    setAnimationResetCount(prev => prev + 1);
+    
     const pokok = parseFloat(upahPokok) || 0;
     const tunjangan = parseFloat(tunjanganTetap) || 0;
     const upahBulanan = pokok + tunjangan;
@@ -261,18 +267,22 @@ const KalkulatorPesangon = () => {
 
       let catatanPoin = [];
       
+      // PERUBAHAN DISINI:
+      // Hanya tambahkan penjelasan UPH jika UPH > 0
+      if (finalUph > 0) {
+        catatanPoin.push(
+          `UPH (Cuti) = Hanya estimasi, mekanisme perhitungan aktual biasanya diatur dalam Perjanjian Kerja, Peraturan Perusahaan atau Perjanjian Kerja Bersama.`
+        );
+      }
+      
       if (skenario.pisah) {
-        catatanPoin = [
-          `UPH (Cuti) = Hanya estimasi, mekanisme perhitungan aktual biasanya diatur dalam Perjanjian Kerja, Peraturan Perusahaan atau Perjanjian Kerja Bersama.`,
-          `Uang Pisah = Besaranya tidak diatur undang-undang, melainkan ditentukan sepenuhnya melalui Perjanjian Kerja, Peraturan Perusahaan atau Perjanjian Kerja Bersama. `,
-        ];
-      } else {
-        catatanPoin = [
-          `UPH (Cuti) = Hanya estimasi, mekanisme perhitungan aktual biasanya diatur dalam Perjanjian Kerja, Peraturan Perusahaan atau Perjanjian Kerja Bersama.`,
-        ];
+        catatanPoin.push(
+          `Uang Pisah = Besaranya tidak diatur undang-undang, melainkan ditentukan sepenuhnya melalui Perjanjian Kerja, Peraturan Perusahaan atau Perjanjian Kerja Bersama. `
+        );
       }
 
-      const semuaPenjelasan = [...catatanPoin, ...penjelasanKomponen];
+      // Hanya gabungkan catatan jika ada
+      const semuaPenjelasan = catatanPoin.length > 0 ? [...catatanPoin, ...penjelasanKomponen] : penjelasanKomponen;
 
       setHasil({ 
         total: totalResult, 
@@ -317,18 +327,19 @@ const KalkulatorPesangon = () => {
     setSisaCuti('0');
     setHasil(null);
     setSistemHariKerja('senin-jumat');
+    // Reset animasi juga
+    setAnimationResetCount(prev => prev + 1);
   };
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center pt-16 sm:pt-24 lg:pt-32 pb-8 sm:pb-12 px-3 sm:px-4 lg:px-6 font-sans">
-        <div className="max-w-7xl w-full">
-          {/* Header */}
+<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center pt-24 sm:pt-28 lg:pt-20 pb-8 sm:pb-12 px-4 sm:px-6 font-sans">
+  <div className="max-w-7xl w-full">          {/* Header */}
           <header className="mb-8 sm:mb-12 text-center">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
               <div className="w-8 sm:w-12 h-[2px] sm:h-[3px] bg-gradient-to-r from-emerald-600 to-teal-500"></div>
               <span className="text-emerald-600 text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase">
-                HR Digitazion By Fachrully
+                HR Digitazion PROJECT
               </span>
               <div className="w-8 sm:w-12 h-[2px] sm:h-[3px] bg-gradient-to-l from-emerald-600 to-teal-500"></div>
             </div>
@@ -373,6 +384,7 @@ const KalkulatorPesangon = () => {
               hasil={hasil}
               tipeKaryawan={tipeKaryawan}
               formatRupiah={formatRupiah}
+              hasReset={animationResetCount}
             />
           </div>
 
