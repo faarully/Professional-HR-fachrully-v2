@@ -37,7 +37,7 @@ const PsikotestOnline = () => {
         
         {/* Deskripsi: Tracking dikurangi sedikit untuk layar kecil supaya terbaca */}
         <p className="text-slate-500 dark:text-slate-400 text-[9px] md:text-xs font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] max-w-[280px] md:max-w-md mx-auto leading-relaxed">
-          Halaman ini sedang dalam tahap pengembangan intensif untuk memastikan akurasi data Anda.
+          Hold tight! I'm casting some spells to bring this App to life...
         </p>
 
         {/* Back Button */}
