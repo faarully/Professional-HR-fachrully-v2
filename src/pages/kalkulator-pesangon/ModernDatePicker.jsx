@@ -43,37 +43,43 @@ const ModernDatePicker = ({
   const [textInput, setTextInput] = useState('');
   const [rawInput, setRawInput] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [hasUserTyped, setHasUserTyped] = useState(false); // NEW: track jika user sudah mengetik
+  const [hasUserTyped, setHasUserTyped] = useState(false);
+  
+  // STATE TERPISAH untuk tracking fokus dan klik
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isCalendarButtonActive, setIsCalendarButtonActive] = useState(false);
 
   const [error, setError] = useState('');
-  const [border, setBorder] = useState('border-slate-200 dark:border-slate-700');
+  const [border, setBorder] = useState('border-slate-200 dark:border-slate-800');
 
   const ref = useRef(null);
+  const inputRef = useRef(null);
 
   /* =======================
      INIT VALUE
   ======================= */
   useEffect(() => {
-    if (!isEditing && !hasUserTyped) {
+    // Hanya update jika tidak sedang fokus/editing
+    if (!isInputFocused && !isCalendarButtonActive) {
       if (value) {
         const d = new Date(value);
         if (isValid(d)) {
           setTextInput(format(d, 'dd MMMM yyyy', { locale: id }));
-          setBorder('border-emerald-500');
+          setBorder('border-slate-200 dark:border-slate-800');
         }
       } else {
         setTextInput('');
-        setBorder('border-slate-200 dark:border-slate-700');
+        setBorder('border-slate-200 dark:border-slate-800');
       }
     }
-  }, [value, isEditing, hasUserTyped]);
+  }, [value, isInputFocused, isCalendarButtonActive]);
 
   /* =======================
      PARSER FINAL (BLUR)
   ======================= */
   const parseFinalDate = (input) => {
     const clean = input.trim();
-    if (!clean) return 'EMPTY'; // CHANGED: return 'EMPTY' untuk input kosong
+    if (!clean) return 'EMPTY';
 
     const numbers = clean.replace(/\D/g, '');
 
@@ -106,44 +112,44 @@ const ModernDatePicker = ({
     setTextInput('');
     setRawInput('');
     setError('');
-    setBorder('border-slate-200 dark:border-slate-700');
+    setBorder('border-slate-200 dark:border-slate-800');
     setHasUserTyped(false);
     setIsEditing(false);
+    setIsInputFocused(false);
+    setIsCalendarButtonActive(false);
   };
 
   /* =======================
      INPUT HANDLERS
   ======================= */
-const handleChange = (e) => {
-  const val = e.target.value;
-  
-  // Filter: hanya izinkan angka dan slash
-  const filtered = val.replace(/[^0-9/]/g, '');
-  
-  // Ekstrak hanya angka untuk cek panjang
-  const numbersOnly = filtered.replace(/\D/g, '');
-  
-  // Batasi maksimal 8 digit angka (DDMMYYYY)
-  if (numbersOnly.length > 8) {
-    return; // Langsung return, tidak update state
-  }
-  
-  setTextInput(filtered);
-  setRawInput(filtered);
-  setHasUserTyped(true);
+  const handleChange = (e) => {
+    const val = e.target.value;
+    
+    const filtered = val.replace(/[^0-9/]/g, '');
+    const numbersOnly = filtered.replace(/\D/g, '');
+    
+    if (numbersOnly.length > 8) return;
+    
+    setTextInput(filtered);
+    setRawInput(filtered);
+    setHasUserTyped(true);
+    
+    // Reset calendar button state saat typing
+    setIsCalendarButtonActive(false);
 
-  // soft state, no hard error
-  setError('');
-  setBorder('border-emerald-400');
+    setError('');
+    setBorder('border-emerald-600');
 
-  // Jika user menghapus semua karakter, auto clear
-  if (!filtered.trim()) {
-    handleClear();
-  }
-};
+    if (!filtered.trim()) {
+      handleClear();
+    }
+  };
 
   const handleFocus = () => {
     setIsEditing(true);
+    setIsInputFocused(true);
+    setIsCalendarButtonActive(false);
+    
     if (rawInput) {
       setTextInput(rawInput);
     } else if (value) {
@@ -154,29 +160,36 @@ const handleChange = (e) => {
         setRawInput(f);
       }
     }
-    setBorder('border-emerald-500');
+    setBorder('border-emerald-600');
   };
 
   const handleBlur = () => {
     setIsEditing(false);
+    setIsInputFocused(false);
+    
+    // Delay untuk memastikan klik kalender tidak terhitung sebagai blur
+    setTimeout(() => {
+      processBlur();
+    }, 150);
+  };
 
+  const processBlur = () => {
     if (!textInput.trim()) {
-      handleClear(); // NEW: Auto clear jika kosong
+      handleClear();
       return;
     }
 
     const parsed = parseFinalDate(textInput);
 
     if (parsed === 'EMPTY') {
-      handleClear(); // NEW: Auto clear
+      handleClear();
       return;
     }
 
     if (parsed === null) {
-      // NEW: Format tidak valid → auto clear
       handleClear();
       setError('Format tidak valid, field dikosongkan');
-      setTimeout(() => setError(''), 2000); // Hanya tampilkan error sementara
+      setTimeout(() => setError(''), 2000);
       return;
     }
 
@@ -195,9 +208,9 @@ const handleChange = (e) => {
     onChange(format(parsed, 'yyyy-MM-dd'));
     setCurrentMonth(parsed);
     setTextInput(format(parsed, 'dd MMMM yyyy', { locale: id }));
-    setBorder('border-emerald-500');
+    setBorder('border-slate-200 dark:border-slate-800');
     setError('');
-    setHasUserTyped(false); // Reset setelah valid
+    setHasUserTyped(false);
   };
 
   /* =======================
@@ -214,9 +227,11 @@ const handleChange = (e) => {
     setCurrentMonth(day);
     setTextInput(format(day, 'dd MMMM yyyy', { locale: id }));
     setRawInput(format(day, 'dd/MM/yyyy'));
-    setBorder('border-emerald-500');
+    setBorder('border-slate-200 dark:border-slate-800');
     setError('');
-    setHasUserTyped(false); // Reset karena pilih dari calendar
+    setHasUserTyped(false);
+    setIsInputFocused(false);
+    setIsCalendarButtonActive(false);
     handleClose();
   };
 
@@ -377,7 +392,7 @@ const handleChange = (e) => {
             `}
           >
             {year}
-          </button>
+        </button>
         ))}
       </div>
     );
@@ -409,7 +424,7 @@ const handleChange = (e) => {
   };
 
   /* =======================
-     CALENDAR CONTROLS
+     CALENDAR CONTROLS - SIMPLIFIED
   ======================= */
   const handleOpen = () => {
     setIsOpen(true);
@@ -419,7 +434,11 @@ const handleChange = (e) => {
 
   const handleClose = () => {
     setIsAnimating(false);
-    setTimeout(() => setIsOpen(false), 200);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsCalendarButtonActive(false);
+    }, 200);
+    
     // Format ulang text input saat menutup
     if (value) {
       const date = new Date(value);
@@ -431,8 +450,32 @@ const handleChange = (e) => {
 
   const handleCalendarIconClick = (e) => {
     e.stopPropagation();
+    e.preventDefault();
+    
+    // Tandai bahwa tombol kalender aktif
+    setIsCalendarButtonActive(true);
+    setIsInputFocused(false);
+    
+    // SET BORDER HIJAU sama seperti typing
+    setBorder('border-emerald-600');
+    
+    // Jika ada value, format ke input sementara
+    if (value) {
+      const date = new Date(value);
+      if (isValid(date)) {
+        const f = format(date, 'dd/MM/yyyy');
+        setTextInput(f);
+        setRawInput(f);
+      }
+    }
+    
     if (isOpen) {
       handleClose();
+      // Reset border setelah kalender ditutup
+      setTimeout(() => {
+        setBorder('border-slate-200 dark:border-slate-800');
+        setIsCalendarButtonActive(false);
+      }, 300);
     } else {
       handleOpen();
     }
@@ -445,65 +488,98 @@ const handleChange = (e) => {
     const click = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
         handleClose();
+        setBorder('border-slate-200 dark:border-slate-800');
+        setIsCalendarButtonActive(false);
+        setIsInputFocused(false);
       }
     };
     document.addEventListener('mousedown', click);
     return () => document.removeEventListener('mousedown', click);
   }, []);
 
+  /* =======================
+     LOGIC UNTUK MENENTUKAN BORDER COLOR - SIMPLIFIED
+  ======================= */
+  const getBorderColor = () => {
+    // Priority: 1. Error, 2. Active state, 3. Default
+    if (border.includes('red-500')) {
+      return 'border-red-500 dark:border-red-500';
+    }
+    if (border.includes('emerald-600')) {
+      return 'border-emerald-600 dark:border-emerald-600';
+    }
+    return 'border-slate-200 dark:border-slate-800';
+  };
+
   return (
     <div className="space-y-2">
       {label && (
-        <label className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1 block tracking-tight">
+        <label className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-2 block">
           {label}
         </label>
       )}
       
       <div className="relative" ref={ref}>
-        <div className="relative">
+        {/* CONTAINER WRAPPER DENGAN BORDER */}
+        <div className={`relative border-2 ${getBorderColor()} rounded-2xl transition-all duration-200`}>
+          {/* ICON KALENDER - SEKARANG TANPA BORDER TERPISAH */}
+          <div 
+            onClick={handleCalendarIconClick}
+            className={`absolute left-0 top-0 h-full flex items-center justify-center px-4 border-r-2 ${getBorderColor()} cursor-pointer transition-all duration-200 rounded-l-2xl bg-gradient-to-r from-slate-100/80 to-slate-50/40 dark:from-slate-800/80 dark:to-slate-950/40 hover:from-slate-200 hover:to-slate-100 dark:hover:from-slate-700 dark:hover:to-slate-800`}
+          >
+            <div className="relative">
+              {isCalendarButtonActive || isOpen ? (
+                <PenTool 
+                  size={18} 
+                  className="text-emerald-500 relative z-10 transition-all duration-200" 
+                />
+              ) : (
+                <Calendar 
+                  size={18} 
+                  className={`text-emerald-500 transition-all duration-200 ${
+                    isOpen ? 'rotate-12 scale-110' : ''
+                  }`} 
+                />
+              )}
+            </div>
+          </div>
+          
+          {/* INPUT FIELD - SEKARANG TANPA BORDER */}
           <input
+            ref={inputRef}
             value={textInput}
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
             placeholder={placeholder}
-            className={`w-full bg-white dark:bg-slate-900 border-2 ${border} rounded-xl px-4 sm:px-5 py-3 sm:py-3.5 font-medium text-sm text-slate-900 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 outline-none transition-all duration-200 pr-12 hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20`}
+            className="w-full bg-slate-50 dark:bg-slate-950 border-none rounded-2xl pl-16 pr-11 py-3 sm:py-4 font-semibold text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all duration-200"
           />
-          <div className="absolute right-0 top-0 h-full flex items-center gap-1.5 sm:gap-2 pr-3">
-            {/* NEW: Always show Clear button when user is typing or has value */}
-            {(textInput || hasUserTyped) && (
-              <div
-                onClick={handleClear}
-                className="p-1 sm:p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
-              >
-                <X size={14} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" />
-              </div>
-            )}
-            <div 
-              onClick={handleCalendarIconClick}
-              className={`p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer ${isOpen ? 'bg-emerald-50 dark:bg-emerald-950/30' : ''}`}
+          
+          {/* BUTTON CLEAR */}
+          {(textInput || hasUserTyped || isCalendarButtonActive) && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95 z-10"
             >
-              {isEditing ? (
-                <PenTool size={18} className="text-emerald-500" />
-              ) : (
-                <Calendar size={18} className={`text-emerald-500 transition-all duration-200 ${isOpen ? 'rotate-12 scale-110' : ''}`} />
-              )}
-            </div>
-          </div>
+              <X size={16} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" />
+            </button>
+          )}
         </div>
 
         {error && (
-          <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 ml-1 animate-fadeIn">
+          <p className="mt-1.5 text-xs text-red-500 dark:text-red-400 ml-2 animate-fadeIn">
             {error}
           </p>
         )}
         
         {showFormatInfo && (
-          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 ml-1">
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 ml-2">
             Contoh: <b>DDMMYYYY</b> atau <b>DD/MM/YYYY</b>
           </p>
         )}
 
+        {/* CALENDAR POPUP */}
         {isOpen && (
           <div 
             className={`absolute z-[60] mt-2 w-full min-w-[320px] sm:min-w-[360px] bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-2xl shadow-slate-300/60 dark:shadow-black/40 overflow-hidden transition-all duration-200 ${
