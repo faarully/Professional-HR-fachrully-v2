@@ -324,7 +324,7 @@ const KalkulatorPesangon = () => {
     setMasaKerjaTahun(0);
     setMasaKerjaBulan(0);
     setMasaKerjaHari(0);
-    setSisaCuti('0');
+    setSisaCuti('');
     setHasil(null);
     setSistemHariKerja('senin-jumat');
     // Reset animasi juga
