@@ -33,9 +33,22 @@ const Expertise = ({ skills }) => {
             return (
               <div 
                 key={idx}
-                className="bg-[#FFFFF0] dark:bg-slate-900 rounded-3xl border border-emerald-600/10 dark:border-slate-800 group 
-                           hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10 
-                           transition-all duration-300 ease-out overflow-hidden"
+                className="
+                  bg-[#FFFFF0] dark:bg-slate-900 
+                  group
+                  rounded-3xl 
+                  border-2 
+                  border-slate-300/80 dark:border-slate-800 
+                  hover:-translate-y-2 
+                  hover:shadow-2xl 
+                  hover:shadow-slate-400/10 dark:hover:shadow-emerald-500/10
+                  hover:border-slate-400 dark:hover:border-slate-700
+                  transition-all duration-300 ease-out 
+                  overflow-hidden
+                  ring-1 ring-slate-200/50 dark:ring-0
+                  shadow-sm
+                  hover:bg-white dark:hover:bg-slate-800/90
+                "
               >
                 <div className="p-6 md:p-12">
                   <div className="mb-8 md:mb-10">
@@ -57,6 +70,8 @@ const Expertise = ({ skills }) => {
                         shadow-lg shadow-emerald-600/20 
                         /* Container Logic */
                         inline-block max-w-full
+                        /* Hover Effect */
+                        group-hover:bg-emerald-700 group-hover:shadow-emerald-600/30
                       "
                     >
                       {title}
@@ -67,7 +82,22 @@ const Expertise = ({ skills }) => {
                     {tags.map((tag, i) => (
                       <span 
                         key={i}
-                        className="px-3 md:px-4 py-2 bg-emerald-600/5 dark:bg-slate-800/80 text-[10px] md:text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase tracking-widest rounded-lg border border-emerald-600/10 dark:border-slate-700 group-hover:border-emerald-500/30 transition-colors duration-300 cursor-default whitespace-normal text-left"
+                        className="
+                          px-3 md:px-4 py-2 
+                          bg-slate-100/80 dark:bg-slate-800/80 
+                          text-[10px] md:text-[11px] 
+                          font-bold 
+                          text-slate-700 dark:text-slate-200 
+                          hover:text-emerald-600 dark:hover:text-emerald-400 
+                          uppercase tracking-widest 
+                          rounded-lg 
+                          border border-slate-300/70 dark:border-slate-700 
+                          group-hover:border-slate-400 dark:group-hover:border-slate-600
+                          transition-colors duration-300 
+                          cursor-default 
+                          whitespace-normal text-left
+                          group-hover:bg-white dark:group-hover:bg-slate-700/80
+                        "
                       >
                         {tag.trim()}
                       </span>

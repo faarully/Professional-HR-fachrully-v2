@@ -7,6 +7,7 @@ import { Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ANIMATION_DURATION } from './navbarConfig.jsx';
 import MenuIcon from './MenuIcon.jsx';
+import NavbarDarkModeSwitcher from './NavbarDarkModeSwitcher';
 
 const MobileNav = ({ 
   isOpen,
@@ -199,7 +200,6 @@ const MobileNav = ({
                       {item.name}<span className="text-emerald-600">.</span>
                     </Link>
                   ) : (
-                    // PERBAIKAN: Gunakan button dengan onClick untuk anchor links
                     <button 
                       onClick={(e) => handleNavClick(e, item.link, false)}
                       className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white block hover:text-emerald-600 active:text-emerald-600 transition-colors duration-300 cursor-pointer touch-manipulation text-left w-full"
@@ -212,13 +212,13 @@ const MobileNav = ({
             ))}
           </motion.div>
 
-          {/* Contact Button */}
+          {/* Contact Button dan Dark Mode Switcher */}
           <motion.div 
             className="mt-auto pt-10"
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ 
               opacity: 1, 
-              x: 0,
+              y: 0,
               transition: {
                 delay: menuItems.length * ANIMATION_DURATION.ITEM_STAGGER + 0.2,
                 duration: 0.3,
@@ -227,24 +227,32 @@ const MobileNav = ({
             }}
             exit={{ 
               opacity: 0,
-              x: 50,
+              y: 20,
               transition: {
                 duration: 0.2
               }
             }}
           >
-            <a 
-              href={waUrl} 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full bg-emerald-600 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-center shadow-xl shadow-emerald-500/20 active:bg-emerald-700 transition-colors cursor-pointer touch-manipulation"
-              onClick={() => {
-                // Menu akan otomatis close karena useEffect di useNavbarLogic
-              }}
-              aria-label="Contact via WhatsApp"
-            >
-              Contact Me
-            </a>
+            <div className="flex items-center justify-between gap-4">
+              {/* Contact Button */}
+              <a 
+                href={waUrl} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 bg-emerald-600 text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-center shadow-xl shadow-emerald-500/20 active:bg-emerald-700 transition-colors cursor-pointer touch-manipulation flex items-center justify-center min-h-[4rem]"
+                onClick={() => {
+                  // Menu akan otomatis close karena useEffect di useNavbarLogic
+                }}
+                aria-label="Contact via WhatsApp"
+              >
+                Contact Me
+              </a>
+              
+              {/* Dark Mode Button - Versi Mobile */}
+              <div className="flex-shrink-0">
+                <NavbarDarkModeSwitcher variant="mobile" />
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       )}

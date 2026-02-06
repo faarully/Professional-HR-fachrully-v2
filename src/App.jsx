@@ -160,7 +160,7 @@ export default function App() {
               </footer>
             )}
 
-            <DarkModeSwitcher />
+            {/* <DarkModeSwitcher /> */} // Innactive
           </motion.div>
         )}
       </div>

@@ -7,6 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { renderMenuItemName, hamburgerVariants } from './navbarConfig.jsx';
 import MenuIcon from './MenuIcon.jsx';
+import NavbarDarkModeSwitcher from './NavbarDarkModeSwitcher'; // ← TAMBAHKAN IMPORT
 
 const DesktopNav = ({ 
   menuItems, 
@@ -147,6 +148,11 @@ const DesktopNav = ({
 
       {/* CTA dan Hamburger */}
       <div className="flex items-center gap-3 lg:gap-4">
+        {/* DARK MODE SWITCHER - TAMBAHKAN DI SINI */}
+        <div className="hidden lg:block">
+          <NavbarDarkModeSwitcher />
+        </div>
+
         {/* Contact Me Button - Hidden on tablet, shown on desktop only */}
         <motion.a 
           whileHover={{ scale: 1.05 }} 
