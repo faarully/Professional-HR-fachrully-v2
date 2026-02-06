@@ -34,7 +34,7 @@ const Marquee = ({ skills }) => {
           }} 
           transition={{ 
             repeat: Infinity, 
-            duration: 150, 
+            duration: 500, // SUPER LAMBAT: 500 detik untuk satu putaran
             ease: "linear",
             repeatType: "loop"
           }} 
@@ -45,10 +45,6 @@ const Marquee = ({ skills }) => {
             return (
               <span 
                 key={`first-${idx}`} 
-                /* PENYESUAIAN: 
-                   - text-sm pada mobile, text-4xl pada desktop 
-                   - mx-6 pada mobile, mx-16 pada desktop
-                */
                 className={`text-sm md:text-4xl font-black uppercase tracking-[0.2em] mx-6 md:mx-16 italic cursor-default select-none transition-all duration-700 drop-shadow-sm hover:brightness-110 flex-shrink-0 ${colorClass}`}
               >
                 {s[0]}
@@ -64,7 +60,7 @@ const Marquee = ({ skills }) => {
           }} 
           transition={{ 
             repeat: Infinity, 
-            duration: 150, 
+            duration: 500, // Harus sama dengan di atas agar sinkron
             ease: "linear",
             repeatType: "loop"
           }} 
@@ -75,9 +71,6 @@ const Marquee = ({ skills }) => {
             return (
               <span 
                 key={`second-${idx}`} 
-                /* PENYESUAIAN: 
-                   Sama dengan di atas agar ukuran seragam saat looping
-                */
                 className={`text-sm md:text-4xl font-black uppercase tracking-[0.2em] mx-6 md:mx-16 italic cursor-default select-none transition-all duration-700 drop-shadow-sm hover:brightness-110 flex-shrink-0 ${colorClass}`}
               >
                 {s[0]}

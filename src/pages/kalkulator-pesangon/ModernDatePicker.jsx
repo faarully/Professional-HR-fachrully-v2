@@ -56,7 +56,7 @@ const ModernDatePicker = ({
   const inputRef = useRef(null);
 
   /* =======================
-     INIT VALUE
+      INIT VALUE
   ======================= */
   useEffect(() => {
     // Hanya update jika tidak sedang fokus/editing
@@ -75,7 +75,7 @@ const ModernDatePicker = ({
   }, [value, isInputFocused, isCalendarButtonActive]);
 
   /* =======================
-     PARSER FINAL (BLUR)
+      PARSER FINAL (BLUR)
   ======================= */
   const parseFinalDate = (input) => {
     const clean = input.trim();
@@ -104,7 +104,7 @@ const ModernDatePicker = ({
   };
 
   /* =======================
-     CLEAR FUNCTION
+      CLEAR FUNCTION
   ======================= */
   const handleClear = (e) => {
     if (e) e.stopPropagation();
@@ -120,7 +120,7 @@ const ModernDatePicker = ({
   };
 
   /* =======================
-     INPUT HANDLERS
+      INPUT HANDLERS
   ======================= */
   const handleChange = (e) => {
     const val = e.target.value;
@@ -214,7 +214,7 @@ const ModernDatePicker = ({
   };
 
   /* =======================
-     CALENDAR LOGIC
+      CALENDAR LOGIC
   ======================= */
   const handleDayClick = (day) => {
     const disabled =
@@ -377,7 +377,7 @@ const ModernDatePicker = ({
     const years = Array.from({ length: 12 }, (_, i) => startYear + i);
 
     return (
-      <div className="grid grid-cols-3 gap-2 p-2">
+      <div className="grid grid-cols-3 gap-2 p-2 pb-4">
         {years.map(year => (
           <button
             key={year}
@@ -398,20 +398,20 @@ const ModernDatePicker = ({
     );
   };
 
-  const renderMonthGrid = () => {
+const renderMonthGrid = () => {
     const currentMonthIndex = currentMonth.getMonth();
 
     return (
-      <div className="grid grid-cols-3 gap-2 p-2">
+      <div className="grid grid-cols-3 gap-2 p-2 pb-4">
         {MONTHS.map((month, index) => (
           <button
             key={month}
             onClick={() => handleMonthClick(index)}
             className={`
-              px-4 py-3 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 touch-manipulation
+              px-2 py-4 min-h-[48px] rounded-2xl font-semibold text-sm transition-all duration-200 touch-manipulation
               ${index === currentMonthIndex
-                ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg'
-                : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:font-bold'
+                ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400'
               }
               active:scale-95
             `}
@@ -424,7 +424,7 @@ const ModernDatePicker = ({
   };
 
   /* =======================
-     OPEN/CLOSE LOGIC
+      OPEN/CLOSE LOGIC
   ======================= */
   const handleOpen = () => {
     setIsOpen(true);
@@ -459,7 +459,7 @@ const ModernDatePicker = ({
   };
 
   /* =======================
-     CLICK OUTSIDE
+      CLICK OUTSIDE
   ======================= */
   useEffect(() => {
     const click = (e) => {
@@ -475,7 +475,7 @@ const ModernDatePicker = ({
   }, []);
 
   /* =======================
-     LOGIC UNTUK MENENTUKAN BORDER COLOR - SIMPLIFIED
+      LOGIC UNTUK MENENTUKAN BORDER COLOR - SIMPLIFIED
   ======================= */
   const getBorderColor = () => {
     // Priority: 1. Error, 2. Active state, 3. Default
