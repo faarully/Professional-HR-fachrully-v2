@@ -24,14 +24,15 @@ const ModernDropdown = ({ value, options, onChange, label, icon, disabled = fals
     }
   }, [searchTerm, options]);
 
-  // Focus search input ketika dropdown terbuka
-  useEffect(() => {
-    if (isOpen && searchable && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-    }
-  }, [isOpen, searchable]);
+  // DISABLED: Tidak auto-focus agar keyboard tidak muncul otomatis di mobile
+  // Biarkan user klik input search secara manual
+  // useEffect(() => {
+  //   if (isOpen && searchable && searchInputRef.current) {
+  //     setTimeout(() => {
+  //       searchInputRef.current?.focus();
+  //     }, 100);
+  //   }
+  // }, [isOpen, searchable]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -139,7 +140,7 @@ const ModernDropdown = ({ value, options, onChange, label, icon, disabled = fals
                 right: 0
               }}
             >
-              {/* SEARCH INPUT - TANPA BORDER HIJAU */}
+              {/* SEARCH INPUT - TANPA AUTO FOCUS */}
               {searchable && (
                 <motion.div
                   initial={{ opacity: 0, y: -5 }}

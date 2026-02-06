@@ -90,7 +90,7 @@ const Hero = ({ data }) => {
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               transition={{ delay: 1, duration: 1.2 }}
-              className="w-full max-w-2xl text-base md:text-lg text-slate-500 dark:text-slate-400 mb-10 leading-relaxed font-normal text-center lg:text-justify tracking-tight opacity-90"
+              className="w-full max-w-2xl text-base md:text-lg text-slate-500 dark:text-slate-400 mb-10 leading-relaxed font-normal text-justify tracking-tight opacity-90"
             >
               {data['Deskripsi']}
             </motion.p>

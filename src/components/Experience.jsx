@@ -55,7 +55,7 @@ const ExperienceCard = ({ row, idx, globalScrollProgress }) => {
       whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.4 } }}
       className="group relative p-8 md:p-12 bg-white/40 dark:bg-white/[0.02] rounded-[2.5rem] border border-slate-200/60 dark:border-white/5 hover:bg-white dark:hover:bg-white/[0.04] transition-all duration-500 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-none"
     >
-      {/* MOBILE BORDER LIGHTSABER ANIMATION (Sesuai gambar instruksi) */}
+      {/* MOBILE BORDER LIGHTSABER ANIMATION */}
       <div className="absolute inset-0 lg:hidden pointer-events-none">
         <svg className="w-full h-full" fill="none">
           <rect 
@@ -107,17 +107,28 @@ const ExperienceCard = ({ row, idx, globalScrollProgress }) => {
           </motion.div>
         </div>
 
-        <div className="flex-1 lg:pl-6 space-y-10">
-          <div className="max-w-3xl opacity-80 group-hover:opacity-100 transition-opacity duration-500">{processTextBody(row[5])}</div>
+        <div className="flex-1 lg:pl-6 space-y-10 w-full">
+          <div className="max-w-3xl opacity-80 group-hover:opacity-100 transition-opacity duration-500 text-justify">
+            {processTextBody(row[5])}
+          </div>
+          
           {row[6] && row[6].trim() !== "" && (
-            <div className="mt-10 p-10 rounded-[2rem] relative overflow-hidden group/project border transition-all duration-700 bg-slate-200/30 dark:bg-white/[0.03] border-slate-200 dark:border-white/5 shadow-xl shadow-slate-200/10 dark:shadow-none">
-              <div className="absolute -top-6 -right-6 p-4 opacity-[0.03] dark:opacity-[0.05] transition-transform duration-1000 group-hover/project:scale-125 group-hover/project:-rotate-12 text-slate-900 dark:text-emerald-400"><Zap size={140} fill="currentColor" /></div>
-              <div className="relative z-10">
+            /* PENYESUAIAN MOBILE: Padding dikurangi dari p-10 menjadi p-6 di mobile agar teks tidak sempit */
+            <div className="mt-10 p-6 md:p-10 rounded-[2rem] relative overflow-hidden group/project border transition-all duration-700 bg-slate-200/30 dark:bg-white/[0.03] border-slate-200 dark:border-white/5 shadow-xl shadow-slate-200/10 dark:shadow-none w-full">
+              <div className="absolute -top-6 -right-6 p-4 opacity-[0.03] dark:opacity-[0.05] transition-transform duration-1000 group-hover/project:scale-125 group-hover/project:-rotate-12 text-slate-900 dark:text-emerald-400">
+                <Zap size={140} fill="currentColor" />
+              </div>
+              <div className="relative z-10 w-full">
                 <div className="flex items-center gap-3 mb-8">
                   <Zap size={14} className="text-emerald-600/50 dark:text-emerald-500/50 fill-current" />
-                  <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-emerald-700/70 dark:text-emerald-500/50">Notable Project</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.4em] text-emerald-700/70 dark:text-emerald-500/50">
+                    Notable Project
+                  </span>
                 </div>
-                <div className="max-w-2xl">{processTextBody(row[6], true)}</div>
+                {/* max-w-none di mobile agar teks menggunakan lebar maksimal box */}
+                <div className="max-w-none md:max-w-2xl text-justify">
+                  {processTextBody(row[6], true)}
+                </div>
               </div>
             </div>
           )}

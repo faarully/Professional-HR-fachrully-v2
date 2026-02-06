@@ -5,9 +5,8 @@ export const processTextBody = (text, isProjectBox = false) => {
 
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
-  // Kita pakai class minimal. 
-  // Biarkan font-family, color, dan weight diatur oleh parent atau global CSS.
-  const textClass = `transition-all duration-300 ${
+  // Ditambahkan text-justify dan hyphens-auto agar browser otomatis memenggal kata jika perlu perataan
+  const textClass = `transition-all duration-300 text-justify hyphens-auto ${
     isProjectBox ? "project-body-text" : "standard-body-text"
   }`;
 
@@ -18,7 +17,8 @@ export const processTextBody = (text, isProjectBox = false) => {
       return (
         <div key={`bullet-${i}`} className={`flex gap-3 mb-2 ${textClass}`}>
           <span className="flex-shrink-0">•</span>
-          <span>
+          {/* w-full memastikan text mengambil sisa ruang dan melakukan justify */}
+          <span className="w-full">
             {line.replace(/^[•-]\s*/, '')}
           </span>
         </div>
