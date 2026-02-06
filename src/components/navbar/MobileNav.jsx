@@ -41,7 +41,7 @@ const MobileNav = ({
             ease: "easeOut",
             duration: ANIMATION_DURATION.MOBILE_MENU
           }}
-          className="fixed inset-0 bg-[#FFFFF0] dark:bg-slate-950 z-[99] flex flex-col p-8 pt-24 lg:hidden overflow-y-auto" // PERUBAHAN: md:hidden → lg:hidden
+          className="fixed inset-0 bg-[#FFFFF0] dark:bg-slate-950 z-[99] flex flex-col p-8 pt-24 lg:hidden overflow-y-auto"
           style={{ touchAction: 'pan-y' }}
         >
           {/* Menu Items */}
@@ -199,13 +199,13 @@ const MobileNav = ({
                       {item.name}<span className="text-emerald-600">.</span>
                     </Link>
                   ) : (
-                    <a 
-                      href={item.link} 
-                      onClick={(e) => handleNavClick(e, item.link)} 
-                      className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white block hover:text-emerald-600 active:text-emerald-600 transition-colors duration-300 cursor-pointer touch-manipulation"
+                    // PERBAIKAN: Gunakan button dengan onClick untuk anchor links
+                    <button 
+                      onClick={(e) => handleNavClick(e, item.link, false)}
+                      className="text-4xl font-black uppercase tracking-tighter text-slate-900 dark:text-white block hover:text-emerald-600 active:text-emerald-600 transition-colors duration-300 cursor-pointer touch-manipulation text-left w-full"
                     >
                       {item.name}<span className="text-emerald-600">.</span>
-                    </a>
+                    </button>
                   )
                 )}
               </motion.div>

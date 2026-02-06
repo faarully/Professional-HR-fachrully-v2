@@ -171,11 +171,14 @@ export const useNavbarLogic = () => {
       e.preventDefault();
     }
 
-    // Tutup semua menu
-    setIsOpen(false);
-    setMobileSubOpen(false);
+    // Tutup semua menu SETELAH navigasi dimulai
+    const closeMenus = () => {
+      setIsOpen(false);
+      setMobileSubOpen(false);
+    };
 
     if (isRoute) {
+      closeMenus();
       return;
     }
 
@@ -183,6 +186,9 @@ export const useNavbarLogic = () => {
       const elementId = id.replace('#', '');
       
       if (!isHomePage) {
+        // Tutup menu dulu sebelum navigasi
+        closeMenus();
+        
         // Jika bukan di homepage, navigasi dulu ke homepage
         navigate('/', { 
           state: { scrollTo: elementId },
@@ -194,9 +200,17 @@ export const useNavbarLogic = () => {
           scrollToElement(elementId);
         }, 300); // Delay lebih lama untuk pastikan halaman sudah render
       } else {
-        // Jika sudah di homepage, langsung scroll
-        scrollToElement(elementId);
+        // Jika sudah di homepage, tutup menu dulu
+        closeMenus();
+        
+        // Langsung scroll dengan delay kecil untuk animasi close
+        setTimeout(() => {
+          scrollToElement(elementId);
+        }, 100);
       }
+    } else {
+      // Untuk link lain, tutup menu
+      closeMenus();
     }
   }, [isHomePage, navigate, scrollToElement]);
 
