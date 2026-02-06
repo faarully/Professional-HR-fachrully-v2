@@ -41,7 +41,7 @@ const MobileNav = ({
             ease: "easeOut",
             duration: ANIMATION_DURATION.MOBILE_MENU
           }}
-          className="fixed inset-0 bg-[#FFFFF0] dark:bg-slate-950 z-[99] flex flex-col p-8 pt-24 md:hidden overflow-y-auto"
+          className="fixed inset-0 bg-[#FFFFF0] dark:bg-slate-950 z-[99] flex flex-col p-8 pt-24 lg:hidden overflow-y-auto" // PERUBAHAN: md:hidden → lg:hidden
           style={{ touchAction: 'pan-y' }}
         >
           {/* Menu Items */}

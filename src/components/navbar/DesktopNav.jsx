@@ -23,8 +23,8 @@ const DesktopNav = ({
 
   return (
     <>
-      {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-white/70">
+      {/* Desktop Menu - Changed from md:flex to lg:flex */}
+      <div className="hidden lg:flex space-x-8 xl:space-x-12 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-white/70">
         {menuItems.map((item) => (
           <div 
             key={item.name} 
@@ -146,23 +146,24 @@ const DesktopNav = ({
       </div>
 
       {/* CTA dan Hamburger */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 lg:gap-4">
+        {/* Contact Me Button - Hidden on tablet, shown on desktop only */}
         <motion.a 
           whileHover={{ scale: 1.05 }} 
           whileTap={{ scale: 0.95 }} 
           href={waUrl} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="hidden md:block bg-slate-900 text-white dark:bg-white dark:text-black px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all rounded-full shadow-lg cursor-pointer"
+          className="hidden lg:block bg-slate-900 text-white dark:bg-white dark:text-black px-6 lg:px-8 py-2 lg:py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all rounded-full shadow-lg cursor-pointer"
           aria-label="Contact via WhatsApp"
         >
           Contact Me
         </motion.a>
 
-        {/* Hamburger Button */}
+        {/* Hamburger Button - Show on tablet and mobile */}
         <motion.button 
           onClick={handleMobileMenuToggle}
-          className="md:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[150] cursor-pointer touch-manipulation"
+          className="flex lg:hidden flex-col justify-center items-center w-10 h-10 focus:outline-none relative z-[150] cursor-pointer touch-manipulation"
           whileTap={{ scale: 0.9 }}
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}

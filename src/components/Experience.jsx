@@ -159,14 +159,34 @@ const Experience = ({ experiences }) => {
     visible: { pathLength: 1, opacity: 0.6, transition: { duration: 1.2, ease: "circOut", delay: 0.4 } }
   };
 
+// ... (ExperienceCard dan logic lainnya tetap sama)
+
   return (
     <section id="experience" className="py-24 bg-transparent font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-32 text-center relative min-h-[200px] flex flex-col items-center justify-center">
+        
+        {/* HEADER SECTION */}
+        <div className="mb-24 md:mb-32 text-center relative flex flex-col items-center justify-center w-full overflow-visible">
           <span className="text-emerald-600/70 text-[10px] font-bold tracking-[0.4em] uppercase mb-8 block">Career Journey</span>
-          <div className="relative flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
-            <motion.div initial={{ x: -120, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ duration: 0.8 }} className="relative pb-6 w-fit">
-              <h2 className="text-4xl md:text-7xl font-bold text-slate-900 dark:text-slate-200 uppercase tracking-tightest leading-none">Professional</h2>
+          
+          <div className="relative flex flex-col md:flex-row justify-center items-center gap-0 md:gap-6 w-full max-w-full">
+            
+            {/* Judul "Professional" */}
+            <motion.div 
+              initial={{ x: -20, opacity: 0 }} 
+              whileInView={{ x: 0, opacity: 1 }} 
+              transition={{ duration: 0.8 }} 
+              className="relative pb-6 w-fit max-w-full"
+            >
+              {/* Penyesuaian Font:
+                - text-3xl: Untuk layar sangat kecil (iPhone 5)
+                - min-[380px]:text-4xl: Untuk HP standar (iPhone 13, dll)
+                - md:text-7xl: Untuk Tablet & Desktop
+              */}
+              <h2 className="text-[1.75rem] min-[380px]:text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-slate-200 uppercase tracking-tightest leading-none break-keep">
+                Professional
+              </h2>
+              
               <svg className="hidden md:block absolute -bottom-2 left-0 w-full h-8 overflow-visible pointer-events-none">
                 <motion.path d="M 0 10 Q 150 30 300 10" variants={lineVariants} initial="hidden" whileInView="visible" stroke="#10b981" strokeWidth="4" fill="none" strokeLinecap="round" />
               </svg>
@@ -174,18 +194,30 @@ const Experience = ({ experiences }) => {
                 <motion.path d="M 0 5 Q 50 15 100 5" variants={lineVariants} initial="hidden" whileInView="visible" stroke="#10b981" strokeWidth="4" fill="none" strokeLinecap="round" />
               </svg>
             </motion.div>
-            <motion.div initial={{ x: 120, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ duration: 0.8 }} className="relative pt-6 md:pt-0 md:pb-6 w-fit">
+
+            {/* Judul "Timeline." */}
+            <motion.div 
+              initial={{ x: 20, opacity: 0 }} 
+              whileInView={{ x: 0, opacity: 1 }} 
+              transition={{ duration: 0.8 }} 
+              className="relative pt-6 md:pt-0 md:pb-6 w-fit max-w-full"
+            >
               <svg className="hidden md:block absolute -top-2 left-0 w-full h-8 overflow-visible pointer-events-none">
                 <motion.path d="M 0 15 Q 150 -5 300 15" variants={lineVariants} initial="hidden" whileInView="visible" stroke="#10b981" strokeWidth="4" fill="none" strokeLinecap="round" />
               </svg>
               <svg className="md:hidden absolute -top-2 left-0 w-full h-6 overflow-visible pointer-events-none" viewBox="0 0 100 20" preserveAspectRatio="none">
                 <motion.path d="M 0 15 Q 50 5 100 15" variants={lineVariants} initial="hidden" whileInView="visible" stroke="#10b981" strokeWidth="4" fill="none" strokeLinecap="round" />
               </svg>
-              <h2 className="text-4xl md:text-7xl font-bold text-slate-400 dark:text-slate-600 uppercase tracking-tightest leading-none">Timeline.</h2>
+              {/* Sama dengan Professional, font dikecilkan khusus layar di bawah 380px */}
+              <h2 className="text-[1.75rem] min-[380px]:text-4xl md:text-6xl lg:text-7xl font-bold text-slate-400 dark:text-slate-600 uppercase tracking-tightest leading-none break-keep">
+                Timeline.
+              </h2>
             </motion.div>
+
           </div>
         </div>
 
+        {/* List Pengalaman */}
         <div className="space-y-12">
           {experiences.map((row, idx) => (
             <ExperienceCard key={idx} row={row} idx={idx} globalScrollProgress={globalScrollProgress} />

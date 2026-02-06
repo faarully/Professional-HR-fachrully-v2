@@ -32,17 +32,17 @@ const Navbar = ({ whatsappNumber }) => {
       <nav 
         className={`fixed top-0 w-full z-[100] transition-all duration-300 ease-in-out ${
           scrolled || isOpen
-            ? 'bg-[#FFFFF0]/90 dark:bg-slate-950/90 backdrop-blur-md py-4 shadow-sm' // PERUBAHAN: bg-white/90 → bg-[#FFFFF0]/90
-            : 'bg-transparent py-8'
+            ? 'bg-[#FFFFF0]/90 dark:bg-slate-950/90 backdrop-blur-md py-3 md:py-4 shadow-sm' // PERUBAHAN: py responsive
+            : 'bg-transparent py-6 md:py-8' // PERUBAHAN: py responsive
         }`}
         ref={menuRef}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative z-[101]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between relative z-[101]">
           {/* Logo */}
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="text-2xl font-black tracking-tighter uppercase italic text-slate-900 dark:text-white cursor-pointer"
+              className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-slate-900 dark:text-white cursor-pointer"
               onClick={(e) => {
                 if (isHomePage) {
                   handleNavClick(e, '#about');
