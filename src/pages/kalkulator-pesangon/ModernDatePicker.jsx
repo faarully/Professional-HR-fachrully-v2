@@ -58,7 +58,7 @@ const ModernDatePicker = ({
       INIT VALUE
   ======================= */
   useEffect(() => {
-    if (!isInputFocused && !isCalendarButtonActive) {
+    if (!isInputFocused && !isCalendarButtonActive && !isOpen) {
       if (value) {
         const d = new Date(value);
         if (isValid(d)) {
@@ -70,7 +70,7 @@ const ModernDatePicker = ({
         setBorder('border-slate-200 dark:border-slate-800');
       }
     }
-  }, [value, isInputFocused, isCalendarButtonActive]);
+  }, [value, isInputFocused, isCalendarButtonActive, isOpen]);
 
   /* =======================
       PARSER FINAL (BLUR)
@@ -115,6 +115,7 @@ const ModernDatePicker = ({
     setIsEditing(false);
     setIsInputFocused(false);
     setIsCalendarButtonActive(false);
+    handleClose();
   };
 
   /* =======================
@@ -164,7 +165,10 @@ const ModernDatePicker = ({
     setIsInputFocused(false);
     
     setTimeout(() => {
-      processBlur();
+      // Hanya process blur jika kalender TIDAK terbuka
+      if (!isOpen) {
+        processBlur();
+      }
     }, 150);
   };
 
@@ -423,13 +427,11 @@ const ModernDatePicker = ({
             `}
             title={month}
           >
-            {/* Container untuk centering yang lebih baik */}
             <div className="relative w-full flex items-center justify-center">
               <span className="text-xs sm:text-sm font-medium text-center leading-tight px-1 break-words">
                 {month}
               </span>
               
-              {/* Highlight effect untuk bulan yang dipilih */}
               {index === currentMonthIndex && (
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-600/10 rounded-xl sm:rounded-2xl" />
               )}
@@ -446,12 +448,16 @@ const ModernDatePicker = ({
   const handleOpen = () => {
     setIsOpen(true);
     setIsCalendarButtonActive(true);
-    setIsInputFocused(false);
-    inputRef.current?.blur();
+    // JANGAN blur input, biarkan tetap focused
+    setIsInputFocused(true);
+    // inputRef.current?.focus(); // Opsional: fokus lagi
+    
     if (value) {
       setCurrentMonth(new Date(value));
     }
     setViewMode('days');
+    // Set border menjadi hijau saat kalender dibuka
+    setBorder('border-emerald-600');
     setTimeout(() => setIsAnimating(true), 10);
   };
 
@@ -460,16 +466,16 @@ const ModernDatePicker = ({
     setTimeout(() => {
       setIsOpen(false);
       setIsCalendarButtonActive(false);
+      // Kembalikan border ke warna normal setelah kalender ditutup
+      if (!isInputFocused && !error) {
+        setBorder('border-slate-200 dark:border-slate-800');
+      }
     }, 200);
   };
 
   const handleCalendarIconClick = () => {
     if (isOpen) {
       handleClose();
-      setTimeout(() => {
-        setIsCalendarButtonActive(false);
-        setBorder('border-slate-200 dark:border-slate-800');
-      }, 300);
     } else {
       handleOpen();
     }
@@ -482,23 +488,27 @@ const ModernDatePicker = ({
     const click = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
         handleClose();
-        setBorder('border-slate-200 dark:border-slate-800');
+        // Hanya reset border jika tidak ada error
+        if (!error) {
+          setBorder('border-slate-200 dark:border-slate-800');
+        }
         setIsCalendarButtonActive(false);
         setIsInputFocused(false);
       }
     };
     document.addEventListener('mousedown', click);
     return () => document.removeEventListener('mousedown', click);
-  }, []);
+  }, [error]);
 
   /* =======================
-      LOGIC UNTUK MENENTUKAN BORDER COLOR - SIMPLIFIED
+      LOGIC UNTUK MENENTUKAN BORDER COLOR - IMPROVED
   ======================= */
   const getBorderColor = () => {
+    // Priority: 1. Error, 2. Active state (input focused OR calendar open), 3. Default
     if (border.includes('red-500')) {
       return 'border-red-500 dark:border-red-500';
     }
-    if (border.includes('emerald-600')) {
+    if (border.includes('emerald-600') || isOpen || isInputFocused) {
       return 'border-emerald-600 dark:border-emerald-600';
     }
     return 'border-slate-200 dark:border-slate-800';
@@ -514,7 +524,7 @@ const ModernDatePicker = ({
       
       <div className="relative" ref={ref}>
         {/* CONTAINER WRAPPER DENGAN BORDER */}
-        <div className={`relative border-2 ${getBorderColor()} rounded-2xl transition-all duration-200`}>
+        <div className={`relative border-2 ${getBorderColor()} rounded-2xl transition-all duration-200 ${isOpen ? 'ring-2 ring-emerald-500/20' : ''}`}>
           {/* ICON KALENDER */}
           <div 
             onClick={handleCalendarIconClick}
@@ -575,7 +585,7 @@ const ModernDatePicker = ({
         {/* CALENDAR POPUP */}
         {isOpen && (
           <div 
-            className={`absolute z-[60] mt-2 w-full max-w-[360px] left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-2xl shadow-slate-300/60 dark:shadow-black/40 overflow-hidden transition-all duration-200 ${
+            className={`absolute z-[60] mt-2 w-full max-w-[360px] left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-600 dark:border-emerald-600 shadow-2xl shadow-slate-300/60 dark:shadow-black/40 overflow-hidden transition-all duration-200 ${
               isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}
           >
@@ -640,7 +650,6 @@ const ModernDatePicker = ({
               {viewMode === 'months' && renderMonthGrid()}
               {viewMode === 'days' && (
                 <div className="space-y-2">
-                  {/* Days header */}
                   <div className="grid grid-cols-7 gap-1 mb-2">
                     {DAYS.map(day => (
                       <div 
@@ -656,7 +665,6 @@ const ModernDatePicker = ({
                     ))}
                   </div>
                   
-                  {/* Calendar grid */}
                   <div className="space-y-1">
                     {renderCalendar()}
                   </div>
