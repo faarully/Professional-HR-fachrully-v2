@@ -45,7 +45,6 @@ const ModernDatePicker = ({
   const [isEditing, setIsEditing] = useState(false);
   const [hasUserTyped, setHasUserTyped] = useState(false);
   
-  // STATE TERPISAH untuk tracking fokus dan klik
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isCalendarButtonActive, setIsCalendarButtonActive] = useState(false);
 
@@ -59,7 +58,6 @@ const ModernDatePicker = ({
       INIT VALUE
   ======================= */
   useEffect(() => {
-    // Hanya update jika tidak sedang fokus/editing
     if (!isInputFocused && !isCalendarButtonActive) {
       if (value) {
         const d = new Date(value);
@@ -134,9 +132,7 @@ const ModernDatePicker = ({
     setRawInput(filtered);
     setHasUserTyped(true);
     
-    // Reset calendar button state saat typing
     setIsCalendarButtonActive(false);
-
     setError('');
     setBorder('border-emerald-600');
 
@@ -167,7 +163,6 @@ const ModernDatePicker = ({
     setIsEditing(false);
     setIsInputFocused(false);
     
-    // Delay untuk memastikan klik kalender tidak terhitung sebagai blur
     setTimeout(() => {
       processBlur();
     }, 150);
@@ -392,31 +387,53 @@ const ModernDatePicker = ({
             `}
           >
             {year}
-        </button>
+          </button>
         ))}
       </div>
     );
   };
 
-const renderMonthGrid = () => {
+  /* =======================
+      RENDER MONTH GRID - IMPROVED VERSION
+      Konsisten font size untuk semua bulan dengan responsive design
+  ======================= */
+  const renderMonthGrid = () => {
     const currentMonthIndex = currentMonth.getMonth();
 
     return (
-      <div className="grid grid-cols-3 gap-2 p-2 pb-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 p-3 pb-4">
         {MONTHS.map((month, index) => (
           <button
             key={month}
             onClick={() => handleMonthClick(index)}
             className={`
-              px-2 py-4 min-h-[48px] rounded-2xl font-semibold text-sm transition-all duration-200 touch-manipulation
+              relative overflow-hidden
+              px-1.5 sm:px-2 py-3 sm:py-4 
+              min-h-[52px] sm:min-h-[56px]
+              rounded-xl sm:rounded-2xl
+              font-semibold 
+              transition-all duration-200 touch-manipulation
+              flex items-center justify-center
+              group
               ${index === currentMonthIndex
-                ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 scale-[1.02]'
                 : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400'
               }
               active:scale-95
             `}
+            title={month}
           >
-            {month}
+            {/* Container untuk centering yang lebih baik */}
+            <div className="relative w-full flex items-center justify-center">
+              <span className="text-xs sm:text-sm font-medium text-center leading-tight px-1 break-words">
+                {month}
+              </span>
+              
+              {/* Highlight effect untuk bulan yang dipilih */}
+              {index === currentMonthIndex && (
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-600/10 rounded-xl sm:rounded-2xl" />
+              )}
+            </div>
           </button>
         ))}
       </div>
@@ -478,7 +495,6 @@ const renderMonthGrid = () => {
       LOGIC UNTUK MENENTUKAN BORDER COLOR - SIMPLIFIED
   ======================= */
   const getBorderColor = () => {
-    // Priority: 1. Error, 2. Active state, 3. Default
     if (border.includes('red-500')) {
       return 'border-red-500 dark:border-red-500';
     }
@@ -499,7 +515,7 @@ const renderMonthGrid = () => {
       <div className="relative" ref={ref}>
         {/* CONTAINER WRAPPER DENGAN BORDER */}
         <div className={`relative border-2 ${getBorderColor()} rounded-2xl transition-all duration-200`}>
-          {/* ICON KALENDER - SEKARANG TANPA BORDER TERPISAH */}
+          {/* ICON KALENDER */}
           <div 
             onClick={handleCalendarIconClick}
             className={`absolute left-0 top-0 h-full flex items-center justify-center px-4 border-r-2 ${getBorderColor()} cursor-pointer transition-all duration-200 rounded-l-2xl bg-gradient-to-r from-slate-100/80 to-slate-50/40 dark:from-slate-800/80 dark:to-slate-950/40 hover:from-slate-200 hover:to-slate-100 dark:hover:from-slate-700 dark:hover:to-slate-800 touch-manipulation`}
@@ -521,7 +537,7 @@ const renderMonthGrid = () => {
             </div>
           </div>
           
-          {/* INPUT FIELD - SEKARANG TANPA BORDER */}
+          {/* INPUT FIELD */}
           <input
             ref={inputRef}
             value={textInput}
