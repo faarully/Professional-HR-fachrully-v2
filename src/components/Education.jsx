@@ -31,7 +31,7 @@ const Education = ({ education }) => {
   };
 
   return (
-    <section id="education" className="py-24 bg-slate-900 text-white rounded-t-[3rem] md:rounded-t-[5rem]">
+    <section id="education" className="py-24 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-t-[3rem] md:rounded-t-[5rem]">
       <div className="max-w-7xl mx-auto px-6">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }} 
@@ -39,14 +39,14 @@ const Education = ({ education }) => {
           viewport={{ once: false, amount: 0.3 }}
           className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-20 text-center italic"
         >
-          Credentials & <span className="text-emerald-500">Education.</span>
+          Credentials & <span className="text-emerald-600 dark:text-emerald-500">Education.</span>
         </motion.h2>
 
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }} // 'once: true' mencegah re-trigger animasi saat scroll naik-turun yang bikin capek GPU
+          viewport={{ once: true, amount: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
           {education.map((row, idx) => {
@@ -54,33 +54,54 @@ const Education = ({ education }) => {
             const isLink = extraVal.toLowerCase().startsWith('http');
             
             return (
-              /* Wrapper motion hanya untuk entrance */
               <motion.div 
                 key={idx} 
                 variants={itemVariants}
-                className="block" // Pastikan wrapper tidak punya styling transform
+                className="block"
               >
-                {/* Div Internal untuk Hover (Murni CSS) */}
-                <div className="p-8 bg-white/5 border border-white/10 rounded-3xl flex justify-between items-center group 
-                                transition-all duration-300 ease-out cursor-default
-                                hover:bg-white/[0.08] hover:border-emerald-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/10">
+                {/* Div Internal untuk Hover - Sesuaikan dengan tema */}
+                <div className="
+                  p-8 
+                  bg-[#FFFFF0]/50 dark:bg-white/5 
+                  border-2 border-slate-300/70 dark:border-white/10 
+                  rounded-3xl 
+                  flex justify-between items-center 
+                  group 
+                  transition-all duration-300 ease-out 
+                  cursor-default
+                  hover:bg-white dark:hover:bg-white/[0.08] 
+                  hover:border-slate-400 dark:hover:border-emerald-500/50 
+                  hover:-translate-y-2 
+                  hover:shadow-2xl 
+                  hover:shadow-slate-400/10 dark:hover:shadow-emerald-500/10
+                ">
                   <div>
-                    <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1">{row[0]}</h4>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{row[1]} • {row[2]}</p>
+                    <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">
+                      {row[0]}
+                    </h4>
+                    <p className="text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                      {row[1]} • {row[2]}
+                    </p>
                   </div>
                   
                   {isLink && (
                     <div className="flex items-center ml-4">
-                      {/* Tombol link tetap pake motion kecil karena dia independen, tidak bentrok dengan layout utama */}
                       <motion.a 
                         whileHover={{ scale: 1.1 }} 
                         whileTap={{ scale: 0.9 }}
                         href={extraVal} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center group-hover:bg-emerald-500 transition-colors duration-300"
+                        className="
+                          w-14 h-14 
+                          bg-slate-200/50 dark:bg-white/10 
+                          rounded-2xl 
+                          flex items-center justify-center 
+                          group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 
+                          transition-colors duration-300
+                        "
                       >
-                        <ArrowUpRight size={24} className="text-white" />
+                        <ArrowUpRight size={24} className="text-slate-700 dark:text-white" />
                       </motion.a>
                     </div>
                   )}
