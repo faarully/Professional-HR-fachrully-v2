@@ -30,13 +30,13 @@ export const getMenuItems = (isHomePage) => {
       link: null, 
       sub: [
         { 
-          name: 'Kalkulator Pesangon', 
+          name: 'Severance Calculator', 
           link: '/kalkulator-pesangon', 
           icon: 'calculator', 
-          description: 'Hitung pesangon karyawan' 
+          description: 'Kalkulator pesangon & kompensasi' 
         },
         { 
-          name: 'Psikotest Online', 
+          name: 'Psychological Test', 
           link: '/psikotest-online', 
           icon: 'brain', 
           description: 'Tes psikologi online' 

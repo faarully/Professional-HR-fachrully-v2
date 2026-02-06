@@ -165,7 +165,6 @@ const ModernDatePicker = ({
     setIsInputFocused(false);
     
     setTimeout(() => {
-      // Hanya process blur jika kalender TIDAK terbuka
       if (!isOpen) {
         processBlur();
       }
@@ -332,16 +331,16 @@ const ModernDatePicker = ({
             ${isSelected 
               ? 'bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-lg'
               : isTodayDate && !isSelected
-              ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 text-white font-bold shadow-md'
+              ? 'bg-gradient-to-br from-blue-400 to-blue-500 text-white font-bold shadow-md'
               : isCurrentMonth
               ? `${isSundayDay ? sundayColor : 'text-slate-800 dark:text-slate-200'} ${
-                  !isDisabled ? `hover:bg-emerald-50 dark:hover:bg-emerald-950/30 ${
-                    isSundayDay ? sundayHoverTextColor : 'hover:text-emerald-600 dark:hover:text-emerald-400'
+                  !isDisabled ? `hover:bg-slate-100 dark:hover:bg-slate-800 ${
+                    isSundayDay ? sundayHoverTextColor : 'hover:text-slate-900 dark:hover:text-white'
                   } hover:font-bold` : ''
                 }`
               : `${isSundayDay ? sundayColor : 'text-slate-400 dark:text-slate-600 opacity-70'} ${
-                  !isDisabled ? `hover:bg-emerald-50 dark:hover:bg-emerald-950/30 ${
-                    isSundayDay ? sundayHoverTextColor : 'hover:text-emerald-600 dark:hover:text-emerald-400'
+                  !isDisabled ? `hover:bg-slate-100 dark:hover:bg-slate-800 ${
+                    isSundayDay ? sundayHoverTextColor : 'hover:text-slate-900 dark:hover:text-white'
                   } hover:opacity-100` : ''
                 }`
             }
@@ -384,8 +383,8 @@ const ModernDatePicker = ({
             className={`
               px-4 py-3 min-h-[48px] rounded-xl font-semibold text-sm transition-all duration-200 touch-manipulation
               ${year === currentYear
-                ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg'
-                : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:font-bold'
+                ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg'
+                : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:font-bold hover:bg-slate-100 dark:hover:bg-slate-800'
               }
               active:scale-95
             `}
@@ -397,10 +396,6 @@ const ModernDatePicker = ({
     );
   };
 
-  /* =======================
-      RENDER MONTH GRID - IMPROVED VERSION
-      Konsisten font size untuk semua bulan dengan responsive design
-  ======================= */
   const renderMonthGrid = () => {
     const currentMonthIndex = currentMonth.getMonth();
 
@@ -420,8 +415,8 @@ const ModernDatePicker = ({
               flex items-center justify-center
               group
               ${index === currentMonthIndex
-                ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 scale-[1.02]'
-                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400'
+                ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-md shadow-blue-500/30 scale-[1.02]'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
               }
               active:scale-95
             `}
@@ -433,7 +428,7 @@ const ModernDatePicker = ({
               </span>
               
               {index === currentMonthIndex && (
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-600/10 rounded-xl sm:rounded-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-600/10 rounded-xl sm:rounded-2xl" />
               )}
             </div>
           </button>
@@ -448,15 +443,12 @@ const ModernDatePicker = ({
   const handleOpen = () => {
     setIsOpen(true);
     setIsCalendarButtonActive(true);
-    // JANGAN blur input, biarkan tetap focused
     setIsInputFocused(true);
-    // inputRef.current?.focus(); // Opsional: fokus lagi
     
     if (value) {
       setCurrentMonth(new Date(value));
     }
     setViewMode('days');
-    // Set border menjadi hijau saat kalender dibuka
     setBorder('border-emerald-600');
     setTimeout(() => setIsAnimating(true), 10);
   };
@@ -466,7 +458,6 @@ const ModernDatePicker = ({
     setTimeout(() => {
       setIsOpen(false);
       setIsCalendarButtonActive(false);
-      // Kembalikan border ke warna normal setelah kalender ditutup
       if (!isInputFocused && !error) {
         setBorder('border-slate-200 dark:border-slate-800');
       }
@@ -488,7 +479,6 @@ const ModernDatePicker = ({
     const click = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
         handleClose();
-        // Hanya reset border jika tidak ada error
         if (!error) {
           setBorder('border-slate-200 dark:border-slate-800');
         }
@@ -501,10 +491,9 @@ const ModernDatePicker = ({
   }, [error]);
 
   /* =======================
-      LOGIC UNTUK MENENTUKAN BORDER COLOR - IMPROVED
+      LOGIC UNTUK MENENTUKAN BORDER COLOR
   ======================= */
   const getBorderColor = () => {
-    // Priority: 1. Error, 2. Active state (input focused OR calendar open), 3. Default
     if (border.includes('red-500')) {
       return 'border-red-500 dark:border-red-500';
     }
@@ -523,7 +512,6 @@ const ModernDatePicker = ({
       )}
       
       <div className="relative" ref={ref}>
-        {/* CONTAINER WRAPPER DENGAN BORDER */}
         <div className={`relative border-2 ${getBorderColor()} rounded-2xl transition-all duration-200 ${isOpen ? 'ring-2 ring-emerald-500/20' : ''}`}>
           {/* ICON KALENDER */}
           <div 
@@ -585,7 +573,7 @@ const ModernDatePicker = ({
         {/* CALENDAR POPUP */}
         {isOpen && (
           <div 
-            className={`absolute z-[60] mt-2 w-full max-w-[360px] left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-600 dark:border-emerald-600 shadow-2xl shadow-slate-300/60 dark:shadow-black/40 overflow-hidden transition-all duration-200 ${
+            className={`absolute z-[60] mt-2 w-full max-w-[360px] left-1/2 -translate-x-1/2 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow-2xl shadow-slate-300/60 dark:shadow-black/40 overflow-hidden transition-all duration-200 ${
               isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}
           >
@@ -594,7 +582,7 @@ const ModernDatePicker = ({
               <div className="flex items-center justify-between">
                 <button
                   onClick={handlePrevious}
-                  className="p-2 min-h-[44px] min-w-[44px] hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200 active:scale-95 hover:text-emerald-600 dark:hover:text-emerald-400 touch-manipulation flex items-center justify-center"
+                  className="p-2 min-h-[44px] min-w-[44px] hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200 active:scale-95 hover:text-slate-900 dark:hover:text-white touch-manipulation flex items-center justify-center"
                 >
                   <ChevronLeft size={20} className="text-slate-600 dark:text-slate-300" />
                 </button>
@@ -604,13 +592,13 @@ const ModernDatePicker = ({
                     <>
                       <button
                         onClick={() => setViewMode('months')}
-                        className="px-3 py-1.5 min-h-[40px] font-bold text-sm text-slate-800 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
+                        className="px-3 py-1.5 min-h-[40px] font-bold text-sm text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-white rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
                       >
                         {format(currentMonth, 'MMMM', { locale: id })}
                       </button>
                       <button
                         onClick={() => setViewMode('years')}
-                        className="px-3 py-1.5 min-h-[40px] font-bold text-sm text-slate-800 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
+                        className="px-3 py-1.5 min-h-[40px] font-bold text-sm text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-white rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
                       >
                         {format(currentMonth, 'yyyy')}
                       </button>
@@ -619,7 +607,7 @@ const ModernDatePicker = ({
                   {viewMode === 'months' && (
                     <button
                       onClick={() => setViewMode('years')}
-                      className="px-3 py-1.5 min-h-[40px] font-bold text-sm text-slate-800 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
+                      className="px-3 py-1.5 min-h-[40px] font-bold text-sm text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-white rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
                     >
                       {currentMonth.getFullYear()}
                     </button>
@@ -637,7 +625,7 @@ const ModernDatePicker = ({
 
                 <button
                   onClick={handleNext}
-                  className="p-2 min-h-[44px] min-w-[44px] hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200 active:scale-95 hover:text-emerald-600 dark:hover:text-emerald-400 touch-manipulation flex items-center justify-center"
+                  className="p-2 min-h-[44px] min-w-[44px] hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200 active:scale-95 hover:text-slate-900 dark:hover:text-white touch-manipulation flex items-center justify-center"
                 >
                   <ChevronRight size={20} className="text-slate-600 dark:text-slate-300" />
                 </button>
@@ -656,7 +644,7 @@ const ModernDatePicker = ({
                         key={day} 
                         className={`h-10 flex items-center justify-center text-xs font-bold uppercase ${
                           day === 'Min' 
-                            ? 'text-pink-500 dark:text-pink-400' 
+                            ? 'text-red-500 dark:text-red-400' 
                             : 'text-slate-500 dark:text-slate-400'
                         }`}
                       >
@@ -676,7 +664,7 @@ const ModernDatePicker = ({
             <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-950/50">
               <button
                 onClick={handleToday}
-                className="px-4 py-2 min-h-[44px] text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:font-bold rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
+                className="px-4 py-2 min-h-[44px] text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:font-bold rounded-lg transition-all duration-200 active:scale-95 touch-manipulation"
               >
                 Hari Ini
               </button>
