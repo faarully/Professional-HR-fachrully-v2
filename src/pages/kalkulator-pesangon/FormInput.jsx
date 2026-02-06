@@ -513,11 +513,8 @@ const FormInput = ({
               value={sisaCuti}
               onChange={handleSisaCutiChange}
               onFocus={() => handleNumericInputFocus(cutiInputRef)}
-              onBlur={(e) => {
-                if (e.target.value === '') {
-                  setSisaCuti('0');
-                }
-              }}
+              onBlur={() => {
+                          }}
               inputMode="numeric"
               pattern="[0-9]*"
               className={`w-full bg-slate-50 dark:bg-slate-950 border-2 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm text-slate-900 dark:text-white focus:border-emerald-600 dark:focus:border-emerald-600 outline-none transition-all hover:border-slate-300 dark:hover:border-slate-700 ${
